@@ -8,7 +8,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="JustSaying" Version="6.0.1" />
+      <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604">
+        <HintPath>..\..\..\..\..\..\.nuget\packages\awssdk.core\3.3.25.3\lib\netstandard1.3\AWSSDK.Core.dll</HintPath>
+      </Reference>
+      <Reference Include="JustSaying, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\lib\JustSaying\JustSaying.dll</HintPath>
+      </Reference>
+      <Reference Include="JustSaying.Extensions.DependencyInjection.Microsoft, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\lib\JustSaying_Extensions_DepedencyInjection_Microsoft\JustSaying.Extensions.DependencyInjection.Microsoft.dll</HintPath>
+      </Reference>
+      <Reference Include="JustSaying.Models, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\lib\JustSaying.Models\JustSaying.Models.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0-preview5.19227.9" />
     </ItemGroup>
 
 </Project>
