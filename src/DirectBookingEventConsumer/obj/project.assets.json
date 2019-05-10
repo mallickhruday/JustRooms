@@ -5679,11 +5679,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/ian.cooper/CSharpProjects/github/iancooper/JustSayingTrial/src/DirectBookingEventConsumer/DirectBookingEventConsumer.csproj",
+      "projectUniqueName": "/Users/ian.cooper/CSharpProjects/github/iancooper/JustRooms/src/DirectBookingEventConsumer/DirectBookingEventConsumer.csproj",
       "projectName": "DirectBookingEventConsumer",
-      "projectPath": "/Users/ian.cooper/CSharpProjects/github/iancooper/JustSayingTrial/src/DirectBookingEventConsumer/DirectBookingEventConsumer.csproj",
+      "projectPath": "/Users/ian.cooper/CSharpProjects/github/iancooper/JustRooms/src/DirectBookingEventConsumer/DirectBookingEventConsumer.csproj",
       "packagesPath": "/Users/ian.cooper/.nuget/packages/",
-      "outputPath": "/Users/ian.cooper/CSharpProjects/github/iancooper/JustSayingTrial/src/DirectBookingEventConsumer/obj/",
+      "outputPath": "/Users/ian.cooper/CSharpProjects/github/iancooper/JustRooms/src/DirectBookingEventConsumer/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"

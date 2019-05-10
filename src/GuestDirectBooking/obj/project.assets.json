@@ -4883,11 +4883,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/ian.cooper/CSharpProjects/github/iancooper/JustSayingTrial/src/GuestDirectBooking/GuestDirectBooking.csproj",
+      "projectUniqueName": "/Users/ian.cooper/CSharpProjects/github/iancooper/JustRooms/src/GuestDirectBooking/GuestDirectBooking.csproj",
       "projectName": "GuestDirectBooking",
-      "projectPath": "/Users/ian.cooper/CSharpProjects/github/iancooper/JustSayingTrial/src/GuestDirectBooking/GuestDirectBooking.csproj",
+      "projectPath": "/Users/ian.cooper/CSharpProjects/github/iancooper/JustRooms/src/GuestDirectBooking/GuestDirectBooking.csproj",
       "packagesPath": "/Users/ian.cooper/.nuget/packages/",
-      "outputPath": "/Users/ian.cooper/CSharpProjects/github/iancooper/JustSayingTrial/src/GuestDirectBooking/obj/",
+      "outputPath": "/Users/ian.cooper/CSharpProjects/github/iancooper/JustRooms/src/GuestDirectBooking/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
