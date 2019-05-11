@@ -19,11 +19,10 @@ namespace JustRooms.DirectBookingEventConsumer
             Console.Title = "Direct Booking Event Consumer";
             new CredentialProfileStoreChain().TryGetAWSCredentials("default", out var awsCredentials);
             
-            var host = new HostBuilder()
+            await new HostBuilder()
                 .ConfigureLogging(loggingBuilder => loggingBuilder.AddConsole())
                 .ConfigureServices((hostContext, services) =>
                 {
-                    var configuration = hostContext.Configuration;
                     services.AddJustSaying((config) =>
                     {
                         config.Client(x => { x.WithClientFactory(() => new DefaultAwsClientFactory(awsCredentials)); });
@@ -31,10 +30,9 @@ namespace JustRooms.DirectBookingEventConsumer
                         {
                             x.WithRegions(RegionEndpoint.EUWest1.SystemName);
                         });
-                        config.Subscriptions(x => { x.ForQueue<RoomBookingMade>("").ForTopic<RoomBookingMade>("guestroombookingmade"); });
-                        //config.Publications(x => { x.WithTopic(); }); --can't override to string, which prevents client creating topic with different name
+                        config.Subscriptions(x => { x.ForTopic<GuestRoomBookingMade>("guestroombookingmade"); });
                     });
-                    services.AddJustSayingHandler<RoomBookingMade, RoomBookingMadeHandler>();
+                    services.AddJustSayingHandler<GuestRoomBookingMade, RoomBookingMadeHandler>();
                     services.AddHostedService<Performer>();
                 })
                 .UseConsoleLifetime()

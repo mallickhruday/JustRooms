@@ -2,7 +2,7 @@ using JustSaying.Models;
 
 namespace JustRooms.DirectBookingEventConsumer.ports.events
 {
-    public class RoomBookingMade : Message
+    public class GuestRoomBookingMade : Message
     {
         public Money Price { get; set; }
         public int NumberOfNights { get; set; }
