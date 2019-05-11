@@ -4,6 +4,7 @@ namespace JustRooms.DirectBookingEventConsumer.ports.events
 {
     public class GuestRoomBookingMade : Message
     {
+        public int BookingId { get; set; }
         public Money Price { get; set; }
         public int NumberOfNights { get; set; }
         public string FirstName { get; set; }

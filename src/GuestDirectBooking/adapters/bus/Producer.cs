@@ -27,6 +27,7 @@ namespace JustRooms.GuestDirectBooking.adapters.bus
                 {
                     await _publisher.PublishAsync(new GuestRoomBookingMade
                     {
+                        BookingId = n,
                         Type = RoomType.King,
                         Price = new Money(150, "USD"),
                         NumberOfNights = 3,

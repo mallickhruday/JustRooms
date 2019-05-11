@@ -6,6 +6,7 @@ namespace JustRooms.GuestDirectBooking.ports.events
     {
         public RoomType Type { get; set; }
         public Money Price { get; set; }
+        public int BookingId { get; set; }
         public int NumberOfNights { get; set; }
         public int NumberOfGuests { get; set; }
         public string FirstName { get; set; }
