@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using JustRooms.GuestDirectBooking.ports.events;
@@ -27,7 +28,8 @@ namespace JustRooms.GuestDirectBooking.adapters.bus
                 {
                     await _publisher.PublishAsync(new GuestRoomBookingMade
                     {
-                        BookingId = n,
+                        BookingId = Guid.NewGuid(),
+                        DateOfFirstNight = DateTime.UtcNow.AddDays(30),
                         Type = RoomType.King,
                         Price = new Money(150, "USD"),
                         NumberOfNights = 3,
@@ -37,6 +39,7 @@ namespace JustRooms.GuestDirectBooking.adapters.bus
                         FistLineOfAddress = "5227 Santa Monica Boulevard",
                         ZipCode = "90029",
                         State = "CA",
+                        Email = "jeff.lebowski@google.com",
                         TelephoneNumber = "537-3375",
                         CardNumber = "4012888888881881",
                         CardSecurityCode = "303"

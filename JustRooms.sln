@@ -4,6 +4,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuestDirectBooking", "src\G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectBookingEventConsumer", "src\DirectBookingEventConsumer\DirectBookingEventConsumer.csproj", "{AF0E232E-BBD6-4575-A45A-F5D78F14957C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8B5A43DE-1168-4D53-B997-4A9BAB4CBDBD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{16249B7F-9638-4A08-A9ED-86DE2C0394D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuestDirectBookingContracts", "tests\GuestDirectBookingContracts\GuestDirectBookingContracts.csproj", "{0C385EDA-3CF4-4571-A8F7-49C9A7943B62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageSchemaRepository", "tests\MessageSchemaRepository\MessageSchemaRepository.csproj", "{32B1C4EF-5C61-470D-BBD0-3A234A98F4BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +26,19 @@ Global
 		{AF0E232E-BBD6-4575-A45A-F5D78F14957C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF0E232E-BBD6-4575-A45A-F5D78F14957C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF0E232E-BBD6-4575-A45A-F5D78F14957C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C385EDA-3CF4-4571-A8F7-49C9A7943B62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C385EDA-3CF4-4571-A8F7-49C9A7943B62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C385EDA-3CF4-4571-A8F7-49C9A7943B62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C385EDA-3CF4-4571-A8F7-49C9A7943B62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32B1C4EF-5C61-470D-BBD0-3A234A98F4BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32B1C4EF-5C61-470D-BBD0-3A234A98F4BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32B1C4EF-5C61-470D-BBD0-3A234A98F4BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32B1C4EF-5C61-470D-BBD0-3A234A98F4BB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AF0E232E-BBD6-4575-A45A-F5D78F14957C} = {8B5A43DE-1168-4D53-B997-4A9BAB4CBDBD}
+		{B8754752-8564-4EEA-90E5-AAA9D63AB171} = {8B5A43DE-1168-4D53-B997-4A9BAB4CBDBD}
+		{0C385EDA-3CF4-4571-A8F7-49C9A7943B62} = {16249B7F-9638-4A08-A9ED-86DE2C0394D4}
+		{32B1C4EF-5C61-470D-BBD0-3A234A98F4BB} = {16249B7F-9638-4A08-A9ED-86DE2C0394D4}
 	EndGlobalSection
 EndGlobal

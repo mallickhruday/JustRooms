@@ -12,7 +12,7 @@ namespace JustRooms.DirectBookingEventConsumer.ports.handlers
             var tcs = new TaskCompletionSource<bool>();
             //TODO: Price does not seem to serialize correctly, maybe nested failing out of the box?
             Console.WriteLine($"Booking {booking.BookingId} for {booking.NumberOfNights} nights at {booking.Price.Currency}{booking.Price.Amount}" 
-                              + $" made by {booking.FirstName} {booking.LastName}");
+                              + $"from {booking.DateOfFirstNight} made by {booking.FirstName} {booking.LastName}");
             tcs.SetResult(true);
             return tcs.Task;
         }
