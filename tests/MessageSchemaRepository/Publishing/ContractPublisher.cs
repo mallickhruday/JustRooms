@@ -45,7 +45,7 @@ namespace GuestDirectBookingContracts.publishing
         {
             var examplesDirectoryPath = _examplesDirectoryPath + "/" + messageName;
             AssertDirectory(examplesDirectoryPath);
-            await WriteExampleIfNew(examplesDirectoryPath, jsonMessageExample, jsonMessageExampleFileName, author, commiter);
+            await WriteExampleIfNew(examplesDirectoryPath, messageName, jsonMessageExample, jsonMessageExampleFileName, author, commiter);
         }
         
         /// <summary>
@@ -68,7 +68,7 @@ namespace GuestDirectBookingContracts.publishing
         {
             var contractsDirectoryPath = _contractDirectoryPath  + "/" + messageName;
             AssertDirectory(contractsDirectoryPath);
-            await WriteContractIfNew(contractsDirectoryPath, joiSchema, joiSchemaFileName, author, committer);
+            await WriteContractIfNew(contractsDirectoryPath, messageName, joiSchema, joiSchemaFileName, author, committer);
 
         }
 
@@ -137,18 +137,18 @@ namespace GuestDirectBookingContracts.publishing
             }
         }
         
-        private async Task WriteContractIfNew(
-            string contractsDirectoryPath, 
-            string joiSchema, 
-            string joiSchemaFileName, 
-            Contributor author, 
+        private async Task WriteContractIfNew(string contractsDirectoryPath,
+            string messageName,
+            string joiSchema,
+            string joiSchemaFileName,
+            Contributor author,
             Contributor committer)
         {
-            await WriteFileIfNew(FileType.Contract, contractsDirectoryPath, joiSchema, joiSchemaFileName, author, committer);
+            await WriteFileIfNew(FileType.Contract, contractsDirectoryPath, messageName, joiSchema, joiSchemaFileName, author, committer);
         }
 
-        private async Task WriteExampleIfNew(
-            string examplesDirectoryPath, 
+        private async Task WriteExampleIfNew(string examplesDirectoryPath,
+            string messageName,
             string jsonMessageExample,
             string jsonMessageExampleFileName,
             Contributor author,
@@ -164,14 +164,14 @@ namespace GuestDirectBookingContracts.publishing
                 jsonMessageExampleFileName = jsonMessageExample + $"v.{fileCount + 1}";
             }
 
-            await WriteFileIfNew(FileType.Example, examplesDirectoryPath, jsonMessageExample, jsonMessageExampleFileName, author, committer);
+            await WriteFileIfNew(FileType.Example, examplesDirectoryPath, messageName, jsonMessageExample, jsonMessageExampleFileName, author, committer);
         }
 
-        private async Task WriteFileIfNew(
-            FileType fileType,
-            string directoryPath, 
-            string content, 
-            string fileName, 
+        private async Task WriteFileIfNew(FileType fileType,
+            string directoryPath,
+            string messageName,
+            string content,
+            string fileName,
             Contributor author,
             Contributor committer)
         {
@@ -183,7 +183,7 @@ namespace GuestDirectBookingContracts.publishing
 
             await WriteFile(content, filePath);
             var basePath = fileType == FileType.Contract ? _contractsBaseWorkDir : _examplesBaseWorkDir;
-            CommitFile(basePath + "/" + fileName, author, committer);
+            CommitFile(basePath + "/" + messageName + "/" + fileName, author, committer);
         }
 
 
