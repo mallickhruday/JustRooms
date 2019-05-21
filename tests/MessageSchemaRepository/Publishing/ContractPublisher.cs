@@ -190,7 +190,7 @@ namespace GuestDirectBookingContracts.publishing
         private async Task WriteFile(string jsonMessageExample, string fileName)
         {
             using (var change = new StreamReader(new MemoryStream(new UTF8Encoding().GetBytes(jsonMessageExample))))
-            using (var fileStream = new StreamWriter(File.OpenWrite(fileName), System.Text.Encoding.UTF8))
+            using (var fileStream = new StreamWriter(File.Open(fileName, FileMode.Truncate, FileAccess.Write), System.Text.Encoding.UTF8))
             {
                 var changeLength = change.BaseStream.Length;
 

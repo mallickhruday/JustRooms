@@ -17,7 +17,7 @@ namespace GuestDirectBookingContracts.publishing
             return await ReadFile(_examplesDirectoryPath + "/" + messageName + "/" + jsonMessageExampleFileName);
         }
         
-        public static async Task<string> ReadLocalExample(string baseDir,  string messageName, string jsonMessageExampleFileName)
+        public static async Task<string> ReadLocalSchema(string baseDir,  string messageName, string jsonMessageExampleFileName)
         {
             return await ReadFile(baseDir + "/" + messageName + "/" + jsonMessageExampleFileName);
         }

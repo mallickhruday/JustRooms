@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuestDirectBookingContracts
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageSchemaRepository", "tests\MessageSchemaRepository\MessageSchemaRepository.csproj", "{32B1C4EF-5C61-470D-BBD0-3A234A98F4BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectBookingEventConsumerContracts", "tests\DirectBookingEventConsumerContracts\DirectBookingEventConsumerContracts.csproj", "{71543C95-2C13-49B0-BA7D-09E5C0E46D82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,11 +36,16 @@ Global
 		{32B1C4EF-5C61-470D-BBD0-3A234A98F4BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32B1C4EF-5C61-470D-BBD0-3A234A98F4BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32B1C4EF-5C61-470D-BBD0-3A234A98F4BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71543C95-2C13-49B0-BA7D-09E5C0E46D82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71543C95-2C13-49B0-BA7D-09E5C0E46D82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71543C95-2C13-49B0-BA7D-09E5C0E46D82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71543C95-2C13-49B0-BA7D-09E5C0E46D82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AF0E232E-BBD6-4575-A45A-F5D78F14957C} = {8B5A43DE-1168-4D53-B997-4A9BAB4CBDBD}
 		{B8754752-8564-4EEA-90E5-AAA9D63AB171} = {8B5A43DE-1168-4D53-B997-4A9BAB4CBDBD}
 		{0C385EDA-3CF4-4571-A8F7-49C9A7943B62} = {16249B7F-9638-4A08-A9ED-86DE2C0394D4}
 		{32B1C4EF-5C61-470D-BBD0-3A234A98F4BB} = {16249B7F-9638-4A08-A9ED-86DE2C0394D4}
+		{71543C95-2C13-49B0-BA7D-09E5C0E46D82} = {16249B7F-9638-4A08-A9ED-86DE2C0394D4}
 	EndGlobalSection
 EndGlobal

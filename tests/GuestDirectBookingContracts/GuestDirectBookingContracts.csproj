@@ -18,10 +18,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="guestroombookingmade" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Reference Include="JustSaying, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\lib\JustSaying\JustSaying.dll</HintPath>
       </Reference>
