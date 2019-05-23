@@ -5,13 +5,14 @@ using Newtonsoft.Json.Linq;
 
 namespace MessageSchemaRepository.Verification
 {
-    public class ContractVerifier
+    public class ContractVerifier : IDisposable
     {
         private readonly HttpClient _client;
 
-        public ContractVerifier(HttpClient httpClient)
+        public ContractVerifier()
         {
-            _client = httpClient;
+            //we can't inject a factory into tests to use a pool, so it has to be this way
+            _client = new HttpClient();
         }
 
         public async Task<(bool, string)> GetVerificationResults(Uri baseUri, string path)
@@ -29,6 +30,11 @@ namespace MessageSchemaRepository.Verification
             }
 
             return (hasErrors, errors);
+        }
+
+        public void Dispose()
+        {
+            _client.Dispose();
         }
     }
 

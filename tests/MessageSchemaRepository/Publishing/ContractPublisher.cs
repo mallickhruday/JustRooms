@@ -99,10 +99,10 @@ namespace GuestDirectBookingContracts.publishing
             {
                 repo.Index.Add(relativePathToRepo);
                 repo.Commit(
-                    "",
+                    $"Contract updated at: {DateTime.UtcNow}",
                     new Signature(author.Name, author.Email, new DateTimeOffset()),
                     new Signature(committer.Name, committer.Email, new DateTimeOffset()),
-                    new CommitOptions());
+                    new CommitOptions{AllowEmptyCommit = true});
             }
         }
 
