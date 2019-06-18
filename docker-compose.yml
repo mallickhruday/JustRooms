@@ -1,0 +1,8 @@
+version: '3'
+services:
+  dynamo:
+    image: "amazon/dynamodb-local"
+    volumes:
+      - ./.data/dynamodb:/dynamodb_local_db
+    ports:
+      - "8000:8000"
