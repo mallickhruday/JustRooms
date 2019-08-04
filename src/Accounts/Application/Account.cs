@@ -23,6 +23,9 @@ namespace Accounts.Application
         
         [DynamoDBProperty(typeof(CardDetailsTypeConverter))]
         public CardDetails CardDetails { get; set; }
+        
+        [DynamoDBVersion]
+        public int? VersionNumber { get; set; }
 
         public Account() {}
 

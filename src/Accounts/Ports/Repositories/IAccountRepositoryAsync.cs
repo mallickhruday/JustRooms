@@ -7,7 +7,9 @@ namespace Accounts.Ports.Repositories
 {
     public interface IAccountRepositoryAsync
     {
-        Task AddAsync(Account account, CancellationToken ct);
-        Task<Account> GetAsync(Guid accountIdi, CancellationToken ct);
+        Task AddAsync(Account account, CancellationToken ct = default(CancellationToken));
+        Task<Account> GetAsync(Guid accountId, CancellationToken ct = default(CancellationToken));
+        Task UpdateAsync(Account account, CancellationToken ct = default(CancellationToken));
+        Task DeleteAsync(Guid accountAccountId, CancellationToken ct = default(CancellationToken));
     }
 }

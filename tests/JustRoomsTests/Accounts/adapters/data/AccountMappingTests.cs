@@ -15,7 +15,7 @@ namespace JustRoomsTests.Accounts.adapters.data
     public class AccountMappingTests : DynamoDbBaseTest
     { 
         [Test]
-        public async Task When_mapping_an_account()
+        public async Task When_adding_an_account()
         {
             //arrange
             var id = Guid.NewGuid();
@@ -55,7 +55,81 @@ namespace JustRoomsTests.Accounts.adapters.data
             Assert.That(savedAccount.ContactDetails.TelephoneNumber, Is.EqualTo(account.ContactDetails.TelephoneNumber));
         }
 
-       protected override CreateTableRequest CreateTableRequest()
+        [Test]
+        public async Task When_updating_an_account()
+        {
+             //arrange
+            var id = Guid.NewGuid();
+            var account = new Account()
+            {
+                AccountId = id.ToString(),
+                Name = new Name("Jack", "Torrance"),
+                Addresses = new List<Address>
+                {
+                    new Address("Overlook Hotel", AddressType.Work, "CO", "80517"),
+                    new Address("Overlook Hotel",AddressType.Billing,"CO", "80517")
+                },
+                ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
+                CardDetails  = new CardDetails("4104231121998973", "517")
+            };
+
+            var accountRepository = new AccountRepositoryAsync(Client);
+
+            await accountRepository.AddAsync(account);
+
+            await Task.Delay(50);
+            
+            //act
+            var newName = new Name("Here's", "Johnnny!!!");
+            account.Name = newName;
+
+            await accountRepository.UpdateAsync(account);
+            
+            var savedAccount = await accountRepository.GetAsync(id);
+
+            //assert
+            Assert.That(savedAccount.Name.FirstName, Is.EqualTo(newName.FirstName));
+            Assert.That(savedAccount.Name.LastName, Is.EqualTo(newName.LastName));
+
+        }
+
+        [Test]
+        public async Task When_deleting_an_account()
+        {
+            var id = Guid.NewGuid();
+            var account = new Account()
+            {
+                AccountId = id.ToString(),
+                Name = new Name("Jack", "Torrance"),
+                Addresses = new List<Address>
+                {
+                    new Address("Overlook Hotel", AddressType.Work, "CO", "80517"),
+                    new Address("Overlook Hotel",AddressType.Billing,"CO", "80517")
+                },
+                ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
+                CardDetails  = new CardDetails("4104231121998973", "517")
+            };
+
+            var accountRepository = new AccountRepositoryAsync(Client);
+
+            await accountRepository.AddAsync(account);
+
+            await Task.Delay(50);
+            
+            //act
+
+            await accountRepository.DeleteAsync(Guid.Parse(account.AccountId));
+
+            await Task.Delay(50);
+            
+            var deletedAccount = await accountRepository.GetAsync(Guid.Parse(account.AccountId));
+
+            //assert
+            Assert.IsNull(deletedAccount);
+            
+        }
+
+        protected override CreateTableRequest CreateTableRequest()
        {
             var createTableRequest = new DynamoDbTableFactory().GenerateCreateTableMapper<Account>(
                 new DynamoDbCreateProvisionedThroughput(

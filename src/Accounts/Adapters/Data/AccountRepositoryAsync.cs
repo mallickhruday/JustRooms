@@ -25,6 +25,15 @@ namespace Accounts.Adapters.Data
         {
             return await _context.LoadAsync<Account>(accountId.ToString(), ct);
         }
-        
-   }
+
+        public async Task UpdateAsync(Account account, CancellationToken ct = default(CancellationToken))
+        {
+            await _context.SaveAsync(account, ct).ConfigureAwait(false);
+        }
+
+        public async Task DeleteAsync(Guid accountAccountId, CancellationToken ct = default(CancellationToken))
+        {
+            await _context.DeleteAsync<Account>(accountAccountId.ToString(), ct);
+        }
+    }
 }
