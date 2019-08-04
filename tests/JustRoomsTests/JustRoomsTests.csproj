@@ -7,20 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AWSSDK.Core" Version="3.3.103.10" />
         <PackageReference Include="nunit" Version="3.11.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\CreditCardEventPaymentsWorker\CreditCardEventPaymentsWorker.csproj" />
-      <ProjectReference Include="..\MessageSchemaRepository\MessageSchemaRepository.csproj" />
+      <ProjectReference Include="..\..\src\Accounts\Accounts.csproj" />
+      <ProjectReference Include="..\..\src\DirectBooking\DirectBooking.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="JustSaying, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\lib\JustSaying\JustSaying.dll</HintPath>
+      <Reference Include="Paramore.Brighter.DynamoDb.Extensions, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b90f5623ae237e2c">
+        <HintPath>..\..\lib\Brighter\netstandard2.0\Paramore.Brighter.DynamoDb.Extensions.dll</HintPath>
       </Reference>
     </ItemGroup>
 

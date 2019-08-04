@@ -1,8 +1,15 @@
 version: '3'
+
 services:
   dynamo:
-    image: "amazon/dynamodb-local"
+    image: dwmkerr/dynamodb
+    command: "-sharedDb"
+    hostname: dynamo
     volumes:
-      - ./.data/dynamodb:/dynamodb_local_db
+      - dynamodb:/data
     ports:
       - "8000:8000"
+
+volumes:
+  dynamodb:
+    driver: local

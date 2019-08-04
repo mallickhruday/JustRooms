@@ -4,13 +4,21 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp2.2</TargetFramework>
         <LangVersion>latest</LangVersion>
-        <RootNamespace>JustRooms.GuestDirectBooking</RootNamespace>
+        <RootNamespace>JustRooms.DirectBookingEventConsumer</RootNamespace>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     </PropertyGroup>
 
     <ItemGroup>
-      <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604">
-        <HintPath>..\..\..\..\..\..\.nuget\packages\awssdk.core\3.3.25.3\lib\netstandard1.3\AWSSDK.Core.dll</HintPath>
-      </Reference>
+      <PackageReference Include="AWSSDK.Core" Version="3.3.103.10" />
+      <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.101.37" />
+      <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.3.101.35" />
+      <PackageReference Include="AWSSDK.SQS" Version="3.3.100.46" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0-preview5.19227.9" />
+      <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Reference Include="JustSaying, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\lib\JustSaying\JustSaying.dll</HintPath>
       </Reference>
@@ -20,14 +28,6 @@
       <Reference Include="JustSaying.Models, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\lib\JustSaying.Models\JustSaying.Models.dll</HintPath>
       </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="AWSSDK.Core" Version="3.3.103.10" />
-      <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.3.101.35" />
-      <PackageReference Include="AWSSDK.SQS" Version="3.3.100.46" />
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0-preview5.19227.9" />
-      <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     </ItemGroup>
 
 </Project>
