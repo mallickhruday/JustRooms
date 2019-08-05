@@ -15,14 +15,16 @@
         <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
         <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+        <PackageReference Include="Paramore.Brighter" Version="8.0.305" />
+        <PackageReference Include="Paramore.Brighter.AspNetCore" Version="1.0.13" />
+        <PackageReference Include="Paramore.Darker" Version="2.0.11" />
+        <PackageReference Include="Paramore.Darker.AspNetCore" Version="2.0.11" />
         <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc2" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0-rc2" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Ports\Commands" />
       <Folder Include="Ports\Events" />
-      <Folder Include="Ports\Handlers" />
     </ItemGroup>
 
     <ItemGroup>

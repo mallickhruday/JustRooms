@@ -29,9 +29,10 @@ namespace Accounts.Application
 
         public Account() {}
 
-        public Account(Guid accountId, List<Address> addresses, ContactDetails contactDetails, CardDetails cardDetails)
+        public Account(Guid accountId, Name name,  List<Address> addresses, ContactDetails contactDetails, CardDetails cardDetails)
         {
             AccountId = accountId.ToString();
+            Name = name;
             Addresses = addresses;
             ContactDetails = contactDetails;
             CardDetails = cardDetails;
