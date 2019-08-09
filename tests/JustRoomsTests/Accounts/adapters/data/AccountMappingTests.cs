@@ -31,7 +31,7 @@ namespace JustRoomsTests.Accounts.adapters.data
                 ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
                 CardDetails  = new CardDetails("4104231121998973", "517"),
                 CurrentVersion = 1,
-                Version = "V0",
+                Version = Account.SnapShot,
                 LockedBy = "SYS",
                 LockExpiresAt = DateTime.Now.AddMilliseconds(500).Ticks.ToString()
             };
@@ -77,7 +77,9 @@ namespace JustRoomsTests.Accounts.adapters.data
                     new Address("Overlook Hotel",AddressType.Billing,"CO", "80517")
                 },
                 ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                CardDetails  = new CardDetails("4104231121998973", "517")
+                CardDetails  = new CardDetails("4104231121998973", "517"),
+                CurrentVersion = 1,
+                Version = Account.SnapShot
             };
 
             var accountRepository = new UnitOfWork(Client);
@@ -88,7 +90,7 @@ namespace JustRoomsTests.Accounts.adapters.data
             
             //act
 
-            await accountRepository.ClearAsync(Guid.Parse(account.AccountId));
+            await accountRepository.DeleteAsync(Guid.Parse(account.AccountId), Account.SnapShot);
 
             await Task.Delay(50);
             

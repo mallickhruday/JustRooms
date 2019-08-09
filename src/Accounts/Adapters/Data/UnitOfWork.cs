@@ -18,23 +18,13 @@ namespace Accounts.Adapters.Data
         }
        
         /// <summary>
-        /// Delete the current version of the Account; use purge to kill all versions
-        /// </summary>
-        /// <param name="accountId"></param>
-        /// <param name="ct"></param>
-        public async Task ClearAsync(Guid accountId, CancellationToken ct = default(CancellationToken))
-        {
-            await _context.DeleteAsync<Account>(accountId.ToString(), Account.SnapShot, ct);
-        }
-
-        /// <summary>
         /// Delete the item, all versions
         /// </summary>
         /// <param name="accountId">The account to delete</param>
         /// <param name="ct">Cancel the operation</param>
-        public async Task DeleteAsync(Guid accountId, CancellationToken ct = default(CancellationToken))
+        public async Task DeleteAsync(Guid accountId, string version, CancellationToken ct = default(CancellationToken))
         {
-            await _context.DeleteAsync<Account>(accountId.ToString(), ct);
+            await _context.DeleteAsync<Account>(accountId.ToString(), version, ct);
         }
 
         /// <summary>

@@ -13,33 +13,14 @@ namespace JustRoomsTests.Accounts.Ports
     {
         private Dictionary<Item, Account> _accounts = new Dictionary<Item, Account>();
         
-        public Task ClearAsync(Guid accountId, CancellationToken ct = default(CancellationToken))
+        public Task DeleteAsync(Guid accountId, string version = Account.SnapShot, CancellationToken ct = default(CancellationToken))
         {
             var tcs = new TaskCompletionSource<object>();
-            var item = new Item(accountId, Account.SnapShot);
+            var item = new Item(accountId, version);
             if (_accounts.ContainsKey(item))
             {
                 _accounts.Remove(item);
             }
-            
-            tcs.SetResult(new object());
-            return tcs.Task;
-        }
-        
-        public Task DeleteAsync(Guid accountId, CancellationToken ct = default(CancellationToken))
-        {
-            var tcs = new TaskCompletionSource<object>();
-
-            var purgedAccounts = new Dictionary<Item, Account>();
-            foreach (var entry in _accounts)
-            {
-                if (entry.Key.Id != accountId)
-                {
-                    purgedAccounts.Add(entry.Key, entry.Value);
-                }
-            }
-
-            _accounts = purgedAccounts;
             
             tcs.SetResult(new object());
             return tcs.Task;

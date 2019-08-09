@@ -34,7 +34,7 @@ namespace Accounts.Adapters.Data
 
         public async Task DeleteAsync(Guid accountId, CancellationToken ct = default(CancellationToken))
         {
-            await _unitOfWork.ClearAsync(accountId, ct);
+            await _unitOfWork.DeleteAsync(accountId, Account.SnapShot, ct);
         }
         
         public async Task<Account> GetAsync(Guid accountId, CancellationToken ct = default(CancellationToken))
