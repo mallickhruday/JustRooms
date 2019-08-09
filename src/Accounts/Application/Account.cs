@@ -8,6 +8,9 @@ namespace Accounts.Application
     [DynamoDBTable("Accounts")]
     public class Account
     {
+        public const string SnapShot = "V0";
+        public const string VersionPrefix = "V";
+        
         [DynamoDBHashKey]
         [DynamoDBProperty]
         public string AccountId { get; set; }
@@ -24,8 +27,18 @@ namespace Accounts.Application
         [DynamoDBProperty(typeof(CardDetailsTypeConverter))]
         public CardDetails CardDetails { get; set; }
         
-        [DynamoDBVersion]
-        public int? VersionNumber { get; set; }
+        [DynamoDBRangeKey]
+        [DynamoDBProperty]
+        public string Version { get; set; }
+        
+        [DynamoDBProperty]
+        public int CurrentVersion { get; set; }
+        
+        [DynamoDBProperty]
+        public string LockedBy { get; set; }
+
+        [DynamoDBProperty]
+        public string LockExpiresAt { get; set; }
 
         public Account() {}
 
@@ -36,7 +49,8 @@ namespace Accounts.Application
             Addresses = addresses;
             ContactDetails = contactDetails;
             CardDetails = cardDetails;
+            Version = SnapShot;
+            CurrentVersion = 0;
         }
- 
     }
 }

@@ -29,13 +29,17 @@ namespace JustRoomsTests.Accounts.adapters.data
                     new Address("Overlook Hotel",AddressType.Billing,"CO", "80517")
                 },
                 ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                CardDetails  = new CardDetails("4104231121998973", "517")
+                CardDetails  = new CardDetails("4104231121998973", "517"),
+                CurrentVersion = 1,
+                Version = "V0",
+                LockedBy = "SYS",
+                LockExpiresAt = DateTime.Now.AddMilliseconds(500).Ticks.ToString()
             };
 
-            var accountRepository = new AccountRepositoryAsync(Client);
+            var accountRepository = new UnitOfWork(Client);
 
             //act
-            await accountRepository.AddAsync(account);
+            await accountRepository.SaveAsync(account);
 
             await Task.Delay(50);
 
@@ -53,45 +57,11 @@ namespace JustRoomsTests.Accounts.adapters.data
             Assert.That(savedAccount.CardDetails.CardSecurityCode, Is.EqualTo(savedAccount.CardDetails.CardSecurityCode));
             Assert.That(savedAccount.ContactDetails.Email, Is.EqualTo(savedAccount.ContactDetails.Email));
             Assert.That(savedAccount.ContactDetails.TelephoneNumber, Is.EqualTo(account.ContactDetails.TelephoneNumber));
-        }
-
-        [Test]
-        public async Task When_updating_an_account()
-        {
-             //arrange
-            var id = Guid.NewGuid();
-            var account = new Account()
-            {
-                AccountId = id.ToString(),
-                Name = new Name("Jack", "Torrance"),
-                Addresses = new List<Address>
-                {
-                    new Address("Overlook Hotel", AddressType.Work, "CO", "80517"),
-                    new Address("Overlook Hotel",AddressType.Billing,"CO", "80517")
-                },
-                ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                CardDetails  = new CardDetails("4104231121998973", "517")
-            };
-
-            var accountRepository = new AccountRepositoryAsync(Client);
-
-            await accountRepository.AddAsync(account);
-
-            await Task.Delay(50);
-            
-            //act
-            var newName = new Name("Here's", "Johnnny!!!");
-            account.Name = newName;
-
-            await accountRepository.UpdateAsync(account);
-            
-            var savedAccount = await accountRepository.GetAsync(id);
-
-            //assert
-            Assert.That(savedAccount.Name.FirstName, Is.EqualTo(newName.FirstName));
-            Assert.That(savedAccount.Name.LastName, Is.EqualTo(newName.LastName));
-
-        }
+            Assert.That(savedAccount.CurrentVersion, Is.EqualTo(account.CurrentVersion));
+            Assert.That(savedAccount.Version, Is.EqualTo(account.Version));
+            Assert.That(savedAccount.LockedBy, Is.EqualTo(account.LockedBy));
+            Assert.That(savedAccount.LockExpiresAt, Is.EqualTo(account.LockExpiresAt));
+         }
 
         [Test]
         public async Task When_deleting_an_account()
@@ -110,15 +80,15 @@ namespace JustRoomsTests.Accounts.adapters.data
                 CardDetails  = new CardDetails("4104231121998973", "517")
             };
 
-            var accountRepository = new AccountRepositoryAsync(Client);
+            var accountRepository = new UnitOfWork(Client);
 
-            await accountRepository.AddAsync(account);
+            await accountRepository.SaveAsync(account);
 
             await Task.Delay(50);
             
             //act
 
-            await accountRepository.DeleteAsync(Guid.Parse(account.AccountId));
+            await accountRepository.ClearAsync(Guid.Parse(account.AccountId));
 
             await Task.Delay(50);
             

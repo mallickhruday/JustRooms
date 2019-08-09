@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Accounts.Adapters.Data;
 using Accounts.Application;
 using Accounts.Ports.Commands;
 using Accounts.Ports.Repositories;
@@ -11,9 +12,9 @@ namespace Accounts.Ports.Handlers
     {
         private readonly IAccountRepositoryAsync _accountRepository;
 
-        public AddNewAccountHandlerAsync(IAccountRepositoryAsync accountRepository)
+        public AddNewAccountHandlerAsync(IUnitOfWork unitOfWork)
         {
-            _accountRepository = accountRepository;
+            _accountRepository = new AccountRepositoryAsync(unitOfWork);
         }
         
         public override Task<AddNewAccountCommand> HandleAsync(AddNewAccountCommand command, CancellationToken cancellationToken = new CancellationToken())
