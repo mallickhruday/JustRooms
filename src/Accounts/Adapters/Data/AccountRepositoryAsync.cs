@@ -54,15 +54,18 @@ namespace Accounts.Adapters.Data
 
         public async Task UpdateAsync(Account newAccountVersion, CancellationToken ct = default(CancellationToken))
         {
+            //find the next version to use
             var snapshot = await _unitOfWork.GetAsync(Guid.Parse(newAccountVersion.AccountId), ct: ct);
             var nextVersion = snapshot.CurrentVersion + 1;
             newAccountVersion.CurrentVersion = nextVersion;
             newAccountVersion.Version = Account.VersionPrefix + $"{nextVersion}";
 
+            //create a new snapshot from the current record
             var newSnapshot = new Account(Guid.Parse(newAccountVersion.AccountId), newAccountVersion.Name, newAccountVersion.Addresses, newAccountVersion.ContactDetails, newAccountVersion.CardDetails);
             newSnapshot.CurrentVersion = nextVersion;
             newSnapshot.Version = Account.SnapShot;
 
+            //save the snapshot and the new version
             await _unitOfWork.SaveAsync(newSnapshot, ct);
             await _unitOfWork.SaveAsync(newAccountVersion, ct);
  
