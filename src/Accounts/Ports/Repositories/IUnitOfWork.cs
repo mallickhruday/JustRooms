@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Accounts.Application;
 
-namespace Accounts.Adapters.Data
+namespace Accounts.Ports.Repositories
 {
     public interface IUnitOfWork
     {

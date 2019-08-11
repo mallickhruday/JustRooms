@@ -9,16 +9,17 @@ namespace Accounts.Ports.Handlers
 {
     public class GetAccountByIdHandlerAsync : QueryHandlerAsync<GetAccountById, AccountByIdResult>
     {
-        private readonly IAccountRepositoryAsync _accountRepositoryAsync;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GetAccountByIdHandlerAsync(IAccountRepositoryAsync accountRepositoryAsync)
+        public GetAccountByIdHandlerAsync(IUnitOfWork unitOfWork)
         {
-            _accountRepositoryAsync = accountRepositoryAsync;
+            _unitOfWork = unitOfWork;
         }
         
         public override async Task<AccountByIdResult> ExecuteAsync(GetAccountById query, CancellationToken cancellationToken = new CancellationToken())
         {
-            var account = await _accountRepositoryAsync.GetAsync(query.AccountId, cancellationToken);
+            var accountRepositoryAsync = new AccountRepositoryAsync(_unitOfWork);
+            var account = await accountRepositoryAsync.GetAsync(query.AccountId, cancellationToken);
             return new AccountByIdResult(account);
         }
     }

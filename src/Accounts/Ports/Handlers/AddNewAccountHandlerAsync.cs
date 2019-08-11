@@ -1,25 +1,29 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Accounts.Adapters.Data;
 using Accounts.Application;
 using Accounts.Ports.Commands;
 using Accounts.Ports.Repositories;
 using Paramore.Brighter;
+using Paramore.Brighter.Logging.Attributes;
+using Paramore.Brighter.Policies.Attributes;
 
 namespace Accounts.Ports.Handlers
 {
     public class AddNewAccountHandlerAsync : RequestHandlerAsync<AddNewAccountCommand>
     {
-        private readonly IAccountRepositoryAsync _accountRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
         public AddNewAccountHandlerAsync(IUnitOfWork unitOfWork)
         {
-            _accountRepository = new AccountRepositoryAsync(unitOfWork);
+            _unitOfWork = unitOfWork;
         }
         
-        public override Task<AddNewAccountCommand> HandleAsync(AddNewAccountCommand command, CancellationToken cancellationToken = new CancellationToken())
+        [RequestLogging(step:0, HandlerTiming.Before)]
+        [UsePolicy(Policies.Catalog.DynamoDbAccess, step: 0)]
+        public override async Task<AddNewAccountCommand> HandleAsync(AddNewAccountCommand command, CancellationToken cancellationToken = new CancellationToken())
         {
-            _accountRepository.AddAsync(new Account(
+            var accountRepository = new AccountRepositoryAsync(_unitOfWork);
+            await accountRepository.AddAsync(new Account(
                     command.Id,
                     command.Name,
                     command.Addresses,
@@ -27,7 +31,7 @@ namespace Accounts.Ports.Handlers
                     command.CardDetails
                 )
             );
-            return base.HandleAsync(command, cancellationToken);
+            return await base.HandleAsync(command, cancellationToken);
         }
     }
 }

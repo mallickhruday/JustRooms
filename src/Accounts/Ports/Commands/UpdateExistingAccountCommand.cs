@@ -14,5 +14,6 @@ namespace Accounts.Ports.Commands
         public List<Address> Addresses { get; set; }
         public ContactDetails ContactDetails { get; set; }
         public CardDetails CardDetails { get; set; }
+        public string LockBy { get; set; }
     }
 }
