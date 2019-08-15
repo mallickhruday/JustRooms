@@ -56,16 +56,16 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
             
             //create update command
             var updateCommand = new UpdateExistingAccountCommand
-            {
-                AccountId = id,
-                Name = new Name("Here's", "Johnny!!!"),
-                Addresses = new List<Address>
+            (
+                id,
+                new Name("Here's", "Johnny!!!"),
+                new List<Address>
                 {
                     new Address("Overlook Hotel", AddressType.Billing, "CO", "80517")
                 },
-                ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                CardDetails = new CardDetails("4104231121998973", "517")
-            };
+                new ContactDetails("jack.torrance@shining.com", "666-6666"),
+                new CardDetails("4104231121998973", "517")
+            );
 
             var handler = new UpdateExistingAccountCommandHandlerAsync(_unitOfWork);
 
@@ -127,17 +127,17 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
             
             //create update command
             var updateCommand = new UpdateExistingAccountCommand
-            {
-                AccountId = id,
-                Name = new Name("Here's", "Johnny!!!"),
-                Addresses = new List<Address>
+            (
+                id, 
+                new Name("Here's", "Johnny!!!"),
+                new List<Address>
                 {
                     new Address("Overlook Hotel", AddressType.Billing, "CO", "80517")
                 },
-                ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                CardDetails = new CardDetails("4104231121998973", "517"),
-                LockBy = "GRADY"
-            };
+                new ContactDetails("jack.torrance@shining.com", "666-6666"),
+                new CardDetails("4104231121998973", "517")
+            );
+            updateCommand.LockBy = "GRADY";
 
             
             //Lock the existing account

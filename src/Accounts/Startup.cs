@@ -1,16 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Accounts.Adapters.Data;
+using Accounts.Ports.Handlers;
+using Accounts.Ports.Policies;
+using Accounts.Ports.Repositories;
 using Amazon.DynamoDBv2;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Paramore.Brighter;
+using Paramore.Brighter.DynamoDb.Extensions;
+using Paramore.Brighter.Extensions.DependencyInjection;
+using Paramore.Darker.AspNetCore;
+using Polly;
+using Polly.Registry;
 
 namespace Accounts
 {
@@ -28,7 +32,7 @@ namespace Accounts
         {
             var dynamoDbConfig = Configuration.GetSection("DynamoDb");
             var runLocalDynamoDb = dynamoDbConfig.GetValue<bool>("LocalMode");
-	
+            
             if (runLocalDynamoDb)
             {
                 services.AddSingleton<IAmazonDynamoDB>(sp =>
@@ -39,12 +43,38 @@ namespace Accounts
             }
             else
             {
+                services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
                 services.AddAWSService<IAmazonDynamoDB>();
             }
-
-            //TODO: Add builder
-            //services.AddScoped<DbBuilder>();
             
+            services.AddScoped<DynamoDbTableBuilder>();
+            services.AddScoped<IUnitOfWork, DynamoDbUnitOfWork>();
+            
+            var retryPolicy = Policy.Handle<Exception>().WaitAndRetry(new[] { TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(150) });
+            var circuitBreakerPolicy = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromMilliseconds(500));
+            var retryPolicyAsync = Policy.Handle<Exception>().WaitAndRetryAsync(new[] { TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(150) });
+            var circuitBreakerPolicyAsync = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromMilliseconds(500));
+            var policyRegistry = new PolicyRegistry()
+            {
+                { CommandProcessor.RETRYPOLICY, retryPolicy },
+                { CommandProcessor.CIRCUITBREAKER, circuitBreakerPolicy },
+                { CommandProcessor.RETRYPOLICYASYNC, retryPolicyAsync },
+                { CommandProcessor.CIRCUITBREAKERASYNC, circuitBreakerPolicyAsync },
+                {Catalog.DynamoDbAccess, retryPolicyAsync}
+            }; 
+            
+            //TODO: Make the DynamoDb policy more realistic
+            
+            services.AddBrighter(options =>
+                {
+                    options.PolicyRegistry = policyRegistry;
+                    options.CommandProcessorLifetime = ServiceLifetime.Scoped;
+                })
+                .AsyncHandlersFromAssemblies(typeof(AddNewAccountHandlerAsync).Assembly);
+
+            services.AddDarker()
+                .AddHandlersFromAssemblies(typeof(GetAccountByIdHandlerAsync).Assembly);
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -60,6 +90,7 @@ namespace Accounts
                 app.UseHsts();
             }
 
+            app.UseStatusCodePages();
             app.UseHttpsRedirection();
             app.UseMvc();
         }

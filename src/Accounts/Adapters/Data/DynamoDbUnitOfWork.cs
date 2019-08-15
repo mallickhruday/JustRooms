@@ -8,11 +8,11 @@ using Amazon.DynamoDBv2.DataModel;
 
 namespace Accounts.Adapters.Data
 {
-    public class UnitOfWork : IUnitOfWork
+    public class DynamoDbUnitOfWork : IUnitOfWork
     {
         private DynamoDBContext _context;
 
-        public UnitOfWork(IAmazonDynamoDB amazonDynamoDb)
+        public DynamoDbUnitOfWork(IAmazonDynamoDB amazonDynamoDb)
         {
             _context = new DynamoDBContext(amazonDynamoDb);
         }

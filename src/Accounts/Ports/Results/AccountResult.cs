@@ -4,9 +4,9 @@ using Accounts.Application;
 
 namespace Accounts.Ports.Results
 {
-    public class AccountByIdResult
+    public class AccountResult
     {
-        public AccountByIdResult(Account account)
+        public AccountResult(Account account)
         {
             Id = Guid.Parse(account.AccountId);
             Name = account.Name;

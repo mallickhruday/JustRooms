@@ -2,8 +2,6 @@ namespace Accounts.Application
 {
     public class CardDetails
     {
-        public CardDetails() {}
-        
         public CardDetails(string cardNumber, string cardSecurityCode)
         {
             CardNumber = cardNumber;

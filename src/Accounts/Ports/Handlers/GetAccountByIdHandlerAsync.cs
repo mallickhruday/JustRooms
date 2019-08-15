@@ -7,7 +7,7 @@ using Paramore.Darker;
 
 namespace Accounts.Ports.Handlers
 {
-    public class GetAccountByIdHandlerAsync : QueryHandlerAsync<GetAccountById, AccountByIdResult>
+    public class GetAccountByIdHandlerAsync : QueryHandlerAsync<GetAccountById, AccountResult>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -16,11 +16,11 @@ namespace Accounts.Ports.Handlers
             _unitOfWork = unitOfWork;
         }
         
-        public override async Task<AccountByIdResult> ExecuteAsync(GetAccountById query, CancellationToken cancellationToken = new CancellationToken())
+        public override async Task<AccountResult> ExecuteAsync(GetAccountById query, CancellationToken cancellationToken = new CancellationToken())
         {
             var accountRepositoryAsync = new AccountRepositoryAsync(_unitOfWork);
             var account = await accountRepositoryAsync.GetAsync(query.AccountId, cancellationToken);
-            return new AccountByIdResult(account);
+            return new AccountResult(account);
         }
     }
 }

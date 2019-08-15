@@ -16,6 +16,9 @@
       <PackageReference Include="AWSSDK.SQS" Version="3.3.100.46" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0-preview5.19227.9" />
       <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+      <PackageReference Include="Paramore.Brighter.MessagingGateway.Kafka" Version="8.0.305" />
+      <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection" Version="2.0.4" />
+      <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.Hosting" Version="2.0.4" />
     </ItemGroup>
 
     <ItemGroup>

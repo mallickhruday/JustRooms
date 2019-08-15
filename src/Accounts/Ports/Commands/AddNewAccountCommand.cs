@@ -7,6 +7,15 @@ namespace Accounts.Ports.Commands
 {
     public class AddNewAccountCommand : Command
     {
+        public AddNewAccountCommand(Name name, List<Address> addresses, ContactDetails contactDetails, CardDetails cardDetails)
+            : base(Guid.NewGuid())
+        {
+            Name = name;
+            Addresses = addresses;
+            ContactDetails = contactDetails;
+            CardDetails = cardDetails;
+        }
+        
         public AddNewAccountCommand() : base(Guid.NewGuid()){}
         public Name Name { get; set; }
         public List<Address> Addresses { get; set; }

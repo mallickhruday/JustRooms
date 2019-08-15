@@ -14,9 +14,6 @@
       <Reference Include="JustSaying.Models, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\lib\JustSaying.Models\JustSaying.Models.dll</HintPath>
       </Reference>
-      <Reference Include="Paramore.Brighter, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b90f5623ae237e2c">
-        <HintPath>..\..\lib\Brighter\netstandard2.0\Paramore.Brighter.dll</HintPath>
-      </Reference>
  
     </ItemGroup>
 
@@ -30,6 +27,7 @@
         <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+        <PackageReference Include="Paramore.Brighter" Version="8.0.305" />
     </ItemGroup>
 
     <ItemGroup>

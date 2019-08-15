@@ -36,7 +36,7 @@ namespace JustRoomsTests.Accounts.adapters.data
                 LockExpiresAt = DateTime.Now.AddMilliseconds(500).Ticks.ToString()
             };
 
-            var accountRepository = new UnitOfWork(Client);
+            var accountRepository = new DynamoDbUnitOfWork(Client);
 
             //act
             await accountRepository.SaveAsync(account);
@@ -82,7 +82,7 @@ namespace JustRoomsTests.Accounts.adapters.data
                 Version = Account.SnapShot
             };
 
-            var accountRepository = new UnitOfWork(Client);
+            var accountRepository = new DynamoDbUnitOfWork(Client);
 
             await accountRepository.SaveAsync(account);
 

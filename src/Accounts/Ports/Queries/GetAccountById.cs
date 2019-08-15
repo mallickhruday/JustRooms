@@ -4,7 +4,7 @@ using Paramore.Darker;
 
 namespace Accounts.Ports.Queries
 {
-    public class GetAccountById : IQuery<AccountByIdResult>
+    public class GetAccountById : IQuery<AccountResult>
     {
         public Guid AccountId { get; }
 

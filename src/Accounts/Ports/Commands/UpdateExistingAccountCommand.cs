@@ -7,7 +7,14 @@ namespace Accounts.Ports.Commands
 {
     public class UpdateExistingAccountCommand : Command
     {
-        public UpdateExistingAccountCommand() : base(Guid.NewGuid()) {}
+        public UpdateExistingAccountCommand(Guid accountId, Name name, List<Address> addresses, ContactDetails contactDetails, CardDetails cardDetails) 
+            : base(Guid.NewGuid())
+        {
+            AccountId = accountId;
+            Addresses = addresses;
+            ContactDetails = contactDetails;
+            CardDetails = cardDetails;
+        }
         
         public Guid AccountId { get; set; }
         public Name Name { get; set; }

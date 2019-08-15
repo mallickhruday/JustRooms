@@ -19,8 +19,8 @@ namespace Accounts.Ports.Handlers
             _unitOfWork = unitOfWork;
         }
 
-        [RequestLogging(step:0, HandlerTiming.Before)]
-        [UsePolicy(Policies.Catalog.DynamoDbAccess, step: 0)]
+        [RequestLoggingAsync(step:0, HandlerTiming.Before)]
+        [UsePolicyAsync(Policies.Catalog.DynamoDbAccess, step: 0)]
         public override async Task<UpdateExistingAccountCommand> HandleAsync(UpdateExistingAccountCommand command, CancellationToken cancellationToken = new CancellationToken())
         {
            var repo = new AccountRepositoryAsync(_unitOfWork);
