@@ -68,10 +68,18 @@ namespace Accounts
                 {
                     await dbBuilder.Build(
                         new DynamoDbTableFactory()
-                            .GenerateCreateTableMapper<Account>(new DynamoDbCreateProvisionedThroughput(
-                                new ProvisionedThroughput(readCapacityUnits: 10, writeCapacityUnits:10),
-                                new Dictionary<string, ProvisionedThroughput>()
-                                ))
+                            .GenerateCreateTableMapper<Account>(
+                                new DynamoDbCreateProvisionedThroughput(
+                                    new ProvisionedThroughput(readCapacityUnits: 10, writeCapacityUnits:10),
+                                    new Dictionary<string, ProvisionedThroughput>()
+                                ),
+                                billingMode: BillingMode.PAY_PER_REQUEST,
+                                sseSpecification: new SSESpecification{Enabled = true},
+                                streamSpecification: new StreamSpecification
+                                {
+                                    StreamEnabled = true,
+                                    StreamViewType = StreamViewType.NEW_IMAGE
+                                })
                         );
                     await dbBuilder.EnsureTablesReady(new string[] {"Accounts"}, TableStatus.ACTIVE);
                 }
