@@ -80,7 +80,7 @@ namespace AccountsTransferWorker.Adapters.Data
             return shards;
         }
         
-        private async Task ProcessShard(CancellationToken stoppingToken, Shard shardVARIABLfs
+        private async Task ProcessShard(CancellationToken stoppingToken, Shard shard)
         {
             // Get an iterator for the current shard
             var iteratorRequest = new GetShardIteratorRequest
