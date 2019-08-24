@@ -1,8 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using AccountsTransferWorker.Adapters.Data;
+using AccountsTransferWorker.Adapters.Factories;
+using AccountsTransferWorker.Application;
 using AccountsTransferWorker.Ports;
 using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.Model;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -106,7 +110,13 @@ namespace AccountsTransferWorker
                             services.AddAWSService<IAmazonDynamoDB>();
                             services.AddAWSService<IAmazonDynamoDBStreams>();
                         }
-                               
+                        
+                        var translatorRegistry = new RecordTranslatorRegistry(new TranslatorFactory());
+                        translatorRegistry.Add(typeof(AccountEvent), typeof(AccountFromRecordTranslator));
+
+                        services.AddSingleton<RecordTranslatorRegistry>(translatorRegistry);
+                        services.AddSingleton<IRecordProcessor<StreamRecord>, DynamoDbRecordProcessor>();
+                        services.AddSingleton<IStreamReader, DynamoStreamReader>();       
                         services.AddHostedService<Pump>();
                     })
                     .UseSerilog()
