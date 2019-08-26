@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using AccountsTransferWorker.Application;
 using AccountsTransferWorker.Ports;
+using AccountsTransferWorker.Ports.Events;
+using AccountsTransferWorker.Ports.Streams;
 using Amazon.DynamoDBv2.Model;
 using Newtonsoft.Json;
 

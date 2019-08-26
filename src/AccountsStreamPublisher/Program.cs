@@ -3,8 +3,9 @@ using System.IO;
 using System.Threading.Tasks;
 using AccountsTransferWorker.Adapters.Data;
 using AccountsTransferWorker.Adapters.Factories;
-using AccountsTransferWorker.Application;
 using AccountsTransferWorker.Ports;
+using AccountsTransferWorker.Ports.Events;
+using AccountsTransferWorker.Ports.Streams;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using McMaster.Extensions.CommandLineUtils;
@@ -23,7 +24,7 @@ namespace AccountsTransferWorker
 {
     class Program
     {
-        public static async Task Main(string[] args)
+        static async Task Main(string[] args)
         {
             var app = new CommandLineApplication();
 
@@ -53,7 +54,6 @@ namespace AccountsTransferWorker
                     })
                     .ConfigureServices((hostContext, services) =>
                     {
-                        var messageStore = new InMemoryMessageStore();
                         var gatewayConnection = new KafkaMessagingGatewayConfiguration 
                         {
                             Name = "paramore.brighter.accounttransfer",
@@ -72,14 +72,13 @@ namespace AccountsTransferWorker
                             { CommandProcessor.CIRCUITBREAKERASYNC, circuitBreakerPolicyAsync }
                         };
 
-                        services.AddSingleton<IReadOnlyPolicyRegistry<string>>(policyRegistry); 
-
+                        services.AddSingleton<IReadOnlyPolicyRegistry<string>>(policyRegistry);
                         var producer = new KafkaMessageProducerFactory(gatewayConnection).Create();
                         services
                             .AddBrighter(options =>
                             {
                                 options.PolicyRegistry = policyRegistry;
-                                options.BrighterMessaging = new BrighterMessaging(messageStore, producer);
+                                options.BrighterMessaging = new BrighterMessaging(new InMemoryMessageStore(), producer);
                             })
                             .AutoFromAssemblies();
 

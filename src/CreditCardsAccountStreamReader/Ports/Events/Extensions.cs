@@ -2,13 +2,14 @@
  * See https://devblogs.microsoft.com/pfxteam/implementing-a-simple-foreachasync-part-2/
  * 
  */
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AccountsTransferWorker.Application
+namespace CreditCardsAccountStreamReader.Ports.Events
 {
     public static class Extensions
     {
@@ -16,7 +17,7 @@ namespace AccountsTransferWorker.Application
         {
             return Task.WhenAll(
                 from partition in Partitioner.Create(source).GetPartitions(dop)
-                select Task.Run(async delegate {
+                select Task.Run((Func<Task>) async delegate {
                     using (partition)
                         while (partition.MoveNext())
                             await body(partition.Current);

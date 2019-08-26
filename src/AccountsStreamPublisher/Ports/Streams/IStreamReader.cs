@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AccountsTransferWorker.Ports
+namespace AccountsTransferWorker.Ports.Streams
 {
     public interface IStreamReader
     {

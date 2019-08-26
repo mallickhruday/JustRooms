@@ -1,4 +1,4 @@
-namespace AccountsTransferWorker.Application
+namespace CreditCardsAccountStreamReader.Ports.Events
 {
     public class CardDetails
     {

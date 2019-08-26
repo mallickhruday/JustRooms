@@ -1,6 +1,6 @@
 using System;
 
-namespace AccountsTransferWorker.Ports
+namespace AccountsTransferWorker.Ports.Streams
 {
     public class ShardHasBeenClosedException : Exception
     {

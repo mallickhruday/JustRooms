@@ -20,7 +20,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreditCardPayments", "src\C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustRoomsTests", "tests\JustRoomsTests\JustRoomsTests.csproj", "{43596797-7D89-47D8-AC1A-0FE461E14ED1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountsTransferWorker", "src\AccountsTransferWorker\AccountsTransferWorker.csproj", "{EE366E26-19B1-4227-B8ED-63CBD08C7EF5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountsStreamPublisher", "src\AccountsStreamPublisher\AccountsStreamPublisher.csproj", "{EE366E26-19B1-4227-B8ED-63CBD08C7EF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreditCardsAccountStreamReader", "src\CreditCardsAccountStreamReader\CreditCardsAccountStreamReader.csproj", "{75B1BA65-DD64-43F8-87DC-7687DDE93558}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +66,10 @@ Global
 		{EE366E26-19B1-4227-B8ED-63CBD08C7EF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE366E26-19B1-4227-B8ED-63CBD08C7EF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE366E26-19B1-4227-B8ED-63CBD08C7EF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75B1BA65-DD64-43F8-87DC-7687DDE93558}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75B1BA65-DD64-43F8-87DC-7687DDE93558}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75B1BA65-DD64-43F8-87DC-7687DDE93558}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75B1BA65-DD64-43F8-87DC-7687DDE93558}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AF0E232E-BBD6-4575-A45A-F5D78F14957C} = {8B5A43DE-1168-4D53-B997-4A9BAB4CBDBD}
@@ -75,5 +81,6 @@ Global
 		{D0BBD7AD-763E-4AC9-8051-B9B08DB36A61} = {8B5A43DE-1168-4D53-B997-4A9BAB4CBDBD}
 		{43596797-7D89-47D8-AC1A-0FE461E14ED1} = {16249B7F-9638-4A08-A9ED-86DE2C0394D4}
 		{EE366E26-19B1-4227-B8ED-63CBD08C7EF5} = {8B5A43DE-1168-4D53-B997-4A9BAB4CBDBD}
+		{75B1BA65-DD64-43F8-87DC-7687DDE93558} = {8B5A43DE-1168-4D53-B997-4A9BAB4CBDBD}
 	EndGlobalSection
 EndGlobal

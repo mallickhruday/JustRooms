@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Paramore.Brighter;
 
-namespace AccountsTransferWorker.Ports
+namespace AccountsTransferWorker.Ports.Streams
 {
     public class RecordTranslatorRegistry
     {

@@ -1,6 +1,4 @@
-using Amazon.DynamoDBv2.Model;
-
-namespace AccountsTransferWorker.Ports
+namespace AccountsTransferWorker.Ports.Streams
 {
     public interface IRecordProcessor<TIn>
     {

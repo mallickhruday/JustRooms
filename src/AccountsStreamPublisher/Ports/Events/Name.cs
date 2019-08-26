@@ -1,4 +1,4 @@
-namespace AccountsTransferWorker.Application
+namespace AccountsTransferWorker.Ports.Events
 {
     public class Name
     { 

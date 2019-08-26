@@ -1,7 +1,7 @@
 using System;
 using Paramore.Brighter;
 
-namespace AccountsTransferWorker.Ports
+namespace AccountsTransferWorker.Ports.Streams
 {
     public interface IRecordTranslatorFactory
     {

@@ -6,7 +6,7 @@ using Paramore.Brighter;
 using Polly;
 using Polly.Registry;
 
-namespace AccountsTransferWorker.Ports
+namespace AccountsTransferWorker.Ports.Streams
 {
     public class Pump : BackgroundService
     {

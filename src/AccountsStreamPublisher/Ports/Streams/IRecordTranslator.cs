@@ -1,7 +1,6 @@
-using Amazon.DynamoDBv2.Model;
 using Paramore.Brighter;
 
-namespace AccountsTransferWorker.Ports
+namespace AccountsTransferWorker.Ports.Streams
 {
     public interface IRecordTranslator<TIn, TOut> where TOut : IRequest, new()
     {

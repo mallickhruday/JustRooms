@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Paramore.Brighter;
 
-namespace AccountsTransferWorker.Application
+namespace AccountsTransferWorker.Ports.Events
 {
     public class AccountEvent : Event
     {

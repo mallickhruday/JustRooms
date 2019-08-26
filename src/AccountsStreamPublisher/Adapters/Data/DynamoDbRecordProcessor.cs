@@ -1,5 +1,6 @@
-using AccountsTransferWorker.Application;
 using AccountsTransferWorker.Ports;
+using AccountsTransferWorker.Ports.Events;
+using AccountsTransferWorker.Ports.Streams;
 using Amazon.DynamoDBv2.Model;
 using Microsoft.Extensions.Logging;
 using Paramore.Brighter;
