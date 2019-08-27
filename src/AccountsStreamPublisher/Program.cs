@@ -5,6 +5,7 @@ using AccountsTransferWorker.Adapters.Data;
 using AccountsTransferWorker.Adapters.Factories;
 using AccountsTransferWorker.Ports;
 using AccountsTransferWorker.Ports.Events;
+using AccountsTransferWorker.Ports.Mappers;
 using AccountsTransferWorker.Ports.Streams;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
@@ -80,7 +81,7 @@ namespace AccountsTransferWorker
                                 options.PolicyRegistry = policyRegistry;
                                 options.BrighterMessaging = new BrighterMessaging(new InMemoryMessageStore(), producer);
                             })
-                            .AutoFromAssemblies();
+                            .MapperRegistryFromAssemblies(typeof(AccountEventMessageMapper).Assembly);
 
                         var dynamoDbConfig = hostContext.Configuration.GetSection("DynamoDb");
                         var runLocalDynamoDb = dynamoDbConfig.GetValue<bool>("LocalMode");

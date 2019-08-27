@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using CreditCardsAccountStreamReader.Ports.Events;
 using McMaster.Extensions.CommandLineUtils;
@@ -8,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Paramore.Brighter;
-using Paramore.Brighter.Extensions.DependencyInjection;
 using Paramore.Brighter.MessagingGateway.Kafka;
 using Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection;
 using Paramore.Brighter.ServiceActivator.Extensions.Hosting;
@@ -51,10 +49,10 @@ namespace CreditCardsAccountStreamReader
                     {
                                            var connections = new Connection[]
                     {
-                        new Connection<AccountEvent>(
-                            new ConnectionName("paramore.example.greeting"),
-                            new ChannelName("greeting.event"),
-                            new RoutingKey("greeting.event"),
+                        new Connection<UpsertAccountEvent>(
+                            new ConnectionName("credit.card.account.stream"),
+                            new ChannelName("account.event"),
+                            new RoutingKey("account.event"),
                             timeoutInMilliseconds: 200,
                             isDurable: true,
                             highAvailability: true)
@@ -83,6 +81,9 @@ namespace CreditCardsAccountStreamReader
                     .Build()
                     .RunAsync(cancellcationToken);
             });
+            
+            await app.ExecuteAsync(args);
+ 
         }
     }
 }

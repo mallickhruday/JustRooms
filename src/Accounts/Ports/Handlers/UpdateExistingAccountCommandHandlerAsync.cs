@@ -25,7 +25,7 @@ namespace Accounts.Ports.Handlers
         {
            var repo = new AccountRepositoryAsync(_unitOfWork);
 
-           IAggregateLock aggregateLock = null;
+           AggregateLock aggregateLock = null;
            try
            {
                aggregateLock = await repo.LockAsync(command.AccountId.ToString(), command.LockBy, cancellationToken);

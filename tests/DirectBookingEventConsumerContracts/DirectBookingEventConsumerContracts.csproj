@@ -7,14 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AWSSDK.Core" Version="3.3.103.27" />
+        <PackageReference Include="AWSSDK.Core" Version="3.3.103.31" />
         <PackageReference Include="nunit" Version="3.11.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\CreditCardEventPaymentsWorker\CreditCardEventPaymentsWorker.csproj" />
+      <ProjectReference Include="..\..\src\CreditCardPayments\CreditCardPayments.csproj" />
       <ProjectReference Include="..\MessageSchemaRepository\MessageSchemaRepository.csproj" />
     </ItemGroup>
 

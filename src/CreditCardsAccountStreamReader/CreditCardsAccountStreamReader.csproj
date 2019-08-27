@@ -7,6 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="AWSSDK.Core" Version="3.3.103.31" />
+      <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.101.58" />
       <PackageReference Include="McMaster.Extensions.Hosting.CommandLine" Version="2.4.0-beta.99" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0-preview8.19405.4" />
       <PackageReference Include="Paramore.Brighter.Extensions.DependencyInjection" Version="2.0.4" />

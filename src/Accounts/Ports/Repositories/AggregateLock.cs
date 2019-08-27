@@ -3,11 +3,10 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Accounts.Application;
-using Accounts.Ports.Repositories;
 
-namespace Accounts.Adapters.Data
+namespace Accounts.Ports.Repositories
 {
-    public class AggregateLock : IAggregateLock
+    public class AggregateLock 
     {
         private readonly string _accountId;
         private readonly string _lockedBy;

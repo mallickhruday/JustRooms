@@ -79,7 +79,7 @@ namespace Accounts.Ports.Repositories
         /// <param name="whoIsLocking"></param>
         /// <param name="ct">Operation Cancellation</param>
         /// <returns>Someone else holds a lock</returns>
-        public async Task<IAggregateLock> LockAsync(string accountId, string whoIsLocking, CancellationToken ct = default(CancellationToken))
+        public async Task<AggregateLock> LockAsync(string accountId, string whoIsLocking, CancellationToken ct = default(CancellationToken))
         {
             var snapshot = await GetAsync(Guid.Parse(accountId), ct);
             if (snapshot.LockedBy != null && (snapshot.LockedBy != whoIsLocking || !(DateTime.UtcNow > DateTime.Parse(snapshot.LockExpiresAt))))
@@ -101,7 +101,7 @@ namespace Accounts.Ports.Repositories
         /// </summary>
         /// <param name="account">The updated account</param>
         /// <param name="ct">Operation cancellation</param>
-        public async Task UpdateAsync(Account newAccountVersion, IAggregateLock aggregateLock, CancellationToken ct = default(CancellationToken))
+        public async Task UpdateAsync(Account newAccountVersion, AggregateLock aggregateLock, CancellationToken ct = default(CancellationToken))
         {
             //find the next version to use
             var snapshot = await _unitOfWork.GetAsync(Guid.Parse(newAccountVersion.AccountId), ct: ct);

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Accounts.Adapters.Data;
 using Accounts.Application;
 using Accounts.Ports.Commands;
 using Accounts.Ports.Handlers;

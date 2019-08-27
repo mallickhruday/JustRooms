@@ -4,7 +4,7 @@ using Paramore.Brighter;
 
 namespace CreditCardsAccountStreamReader.Ports.Events
 {
-    public class AccountEvent : Event
+    public class UpsertAccountEvent : Event
     {
         public string AccountId { get; set; }
         public Name Name { get; set; }
@@ -13,6 +13,6 @@ namespace CreditCardsAccountStreamReader.Ports.Events
         public CardDetails CardDetails { get; set; }
         public int Version { get; set; }
 
-        public AccountEvent() : base(Guid.NewGuid()) {}
+        public UpsertAccountEvent() : base(Guid.NewGuid()) {}
     }
 }

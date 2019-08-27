@@ -14,6 +14,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Accounts\Accounts.csproj" />
+      <ProjectReference Include="..\..\src\CreditCardPayments\CreditCardPayments.csproj" />
+      <ProjectReference Include="..\..\src\CreditCardsAccountStreamReader\CreditCardsAccountStreamReader.csproj" />
       <ProjectReference Include="..\..\src\DirectBooking\DirectBooking.csproj" />
     </ItemGroup>
 

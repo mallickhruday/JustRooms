@@ -1,51 +1,49 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Accounts.Adapters.Data;
-using Accounts.Application;
-using Accounts.Ports.Repositories;
+using CreditCardsAccountStreamReader.Application;
+using CreditCardsAccountStreamReader.Ports.Repositories;
 
-namespace JustRoomsTests.Accounts.Ports
+namespace CreditCardsAccountStreamReader.Adapters.Data
 {
     public class InMemoryUnitOfWork : IUnitOfWork
     {
-        private Dictionary<Item, Account> _accounts = new Dictionary<Item, Account>();
+        private Dictionary<Item, AccountCardDetails> _cardDetails = new Dictionary<Item, AccountCardDetails>();
         
-        public Task DeleteAsync(Guid accountId, string version = Account.SnapShot, CancellationToken ct = default(CancellationToken))
+        public Task DeleteAsync(Guid accountId, string version = AccountCardDetails.SnapShot, CancellationToken ct = default(CancellationToken))
         {
             var tcs = new TaskCompletionSource<object>();
             var item = new Item(accountId, version);
-            if (_accounts.ContainsKey(item))
+            if (_cardDetails.ContainsKey(item))
             {
-                _accounts.Remove(item);
+                _cardDetails.Remove(item);
             }
             
             tcs.SetResult(new object());
             return tcs.Task;
         }
 
-        public Task<Account> GetAsync(Guid accountId, string version = Account.SnapShot, CancellationToken ct = default(CancellationToken))
+        public Task<AccountCardDetails> GetAsync(Guid accountId, string version = AccountCardDetails.SnapShot, CancellationToken ct = default(CancellationToken))
         {
-            var tcs = new TaskCompletionSource<Account>();
-            _accounts.TryGetValue(new Item(accountId, version), out Account value);
+            var tcs = new TaskCompletionSource<AccountCardDetails>();
+            _cardDetails.TryGetValue(new Item(accountId, version), out AccountCardDetails value);
             tcs.SetResult(value);
             return tcs.Task;
          }
 
        
-        public Task SaveAsync(Account account, CancellationToken ct = default(CancellationToken))
+        public Task SaveAsync(AccountCardDetails account, CancellationToken ct = default(CancellationToken))
         {
             var tcs = new TaskCompletionSource<object>();
             
             var key = new Item( Guid.Parse(account.AccountId), account.Version);
-            if ( _accounts.ContainsKey(key))
+            if ( _cardDetails.ContainsKey(key))
             {
-                _accounts.Remove(key);
+                _cardDetails.Remove(key);
             }
 
-            _accounts.Add(key, account);
+            _cardDetails.Add(key, account);
             tcs.SetResult(new object());
             return tcs.Task;
         }
