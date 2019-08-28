@@ -67,6 +67,7 @@ namespace JustRoomsTests.CreditCardsAccountStreamReader.Ports.Handlers
             Assert.That(accountCardDetails.CurrentVersion, Is.EqualTo(1));
          }
 
+        [Test]
         public async Task When_updating_an_account()
         {
             //arrange
@@ -120,9 +121,6 @@ namespace JustRoomsTests.CreditCardsAccountStreamReader.Ports.Handlers
             Assert.That(accountCardDetails.ZipCode, Is.EqualTo(sourceAddress.ZipCode));
             Assert.That(accountCardDetails.Version, Is.EqualTo("V0"));
             Assert.That(accountCardDetails.CurrentVersion, Is.EqualTo(2));
- 
-            
- 
         }
   
 
