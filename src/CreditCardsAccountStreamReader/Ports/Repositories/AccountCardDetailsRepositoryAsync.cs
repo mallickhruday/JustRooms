@@ -58,9 +58,24 @@ namespace CreditCardsAccountStreamReader.Ports.Repositories
             if (existingDetails != null)
             { 
                 //if the version is earlier than the version we have
-                    //lock it
-                    //if we can lock it
+                if (cardDetails.CurrentVersion > existingDetails.CurrentVersion)
+                {
+                    AggregateLock aggregateLock = null;
+                    try
+                    {
+                        //lock it
+                        aggregateLock = await LockAsync(cardDetails.AccountId, "SYS", ct);
+
                         //update it
+                        await UpdateAsync(cardDetails, aggregateLock, ct);
+                    }
+                    finally
+                    {
+                        if (aggregateLock != null)
+                            await aggregateLock.ReleaseAsync();
+                    }
+
+                }
             }
             else
             {

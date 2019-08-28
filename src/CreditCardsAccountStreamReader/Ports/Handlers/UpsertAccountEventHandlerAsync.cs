@@ -28,15 +28,17 @@ namespace CreditCardsAccountStreamReader.Ports.Handlers
             
             var repository = new AccountCardDetailsRepositoryAsync(_unitOfWork);
 
-            await repository.UpsertAsync(new AccountCardDetails(
+            var cardDetails = new AccountCardDetails(
                 accountId: @event.AccountId,
                 name: @event.Name.FirstName + " " + @event.Name.LastName,
                 cardNumber: @event.CardDetails.CardNumber,
                 cardSecurityCode: @event.CardDetails.CardSecurityCode,
                 firstLineOfAddress: billingAddress.FistLineOfAddress,
                 zipCode: billingAddress.ZipCode
-            ));
-                
+            );
+            cardDetails.CurrentVersion = @event.Version;
+            
+            await repository.UpsertAsync(cardDetails);
             
             return await base.HandleAsync(@event, cancellationToken);
         }
