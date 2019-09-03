@@ -25,7 +25,7 @@ namespace JustRoomsTests.CreditCardsAccountStreamReader.Ports.Handlers
         public async Task When_adding_an_account()
         {
             //arrange
-            var handler = new UpsertAccountEventHandlerAsync(_unitOfWork);
+            var handler = new UpsertAccountEventHandler(_unitOfWork);
             var @event = new UpsertAccountEvent()
             {
                 AccountId = Guid.NewGuid().ToString(),
@@ -106,7 +106,7 @@ namespace JustRoomsTests.CreditCardsAccountStreamReader.Ports.Handlers
                 Version = 2
             };
             
-            var handler = new UpsertAccountEventHandlerAsync(_unitOfWork);
+            var handler = new UpsertAccountEventHandler(_unitOfWork);
          
             //act
             await handler.HandleAsync(@event);

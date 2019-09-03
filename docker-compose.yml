@@ -1,12 +1,26 @@
 version: '3'
 
 services:
+  
+  web:
+    build: ./src/Accounts
+    hostname: accountsapi
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_AWS__UseLocalServices=true
+      - ASPNETCORE_DynamoDb__LocalServiceUrl=http://docker.for.mac.host.internal:8000/
+      - ASPNETCORE_AWS__Region=eu-west-1
+      - AWS_ACCESS_KEY_ID=FakeAccessKey
+      - AWS_SECRET_ACCESS_KEY=FakeSecretKey
+      - AWS_DEFAULT_REGION=eu-west-1
+    depends_on:
+      - dynamo
+   
   dynamo:
-    image: dwmkerr/dynamodb
-    command: "-sharedDb"
-    hostname: dynamo
-    volumes:
-      - dynamodb:/data
+    image: amazon/dynamodb-local
+    command: -jar DynamoDBLocal.jar -sharedDb 
     ports:
       - "8000:8000"
         
@@ -19,8 +33,6 @@ services:
       - "./zookeeper/logs:/datalog"
     ports:
       - "2181:2181"
-    networks:
-      - kafka
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -31,8 +43,6 @@ services:
     container_name: kafka
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - kafka
     depends_on:
       - zookeeper
     ports:
@@ -51,8 +61,6 @@ services:
   kafdrop:
     image: obsidiandynamics/kafdrop
     restart: "no"
-    networks:
-      - kafka
     depends_on:
       - kafka
     ports:
@@ -61,11 +69,3 @@ services:
       ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_BROKERCONNECT: kafka:29092
       JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication"
-
-networks:
-  kafka:
-    driver: bridge
-
-volumes:
-  dynamodb:
-    driver: local

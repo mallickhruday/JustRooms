@@ -8,7 +8,4 @@
   "AWS": {
     "Region": "eu-west-1"
   },
-  "DynamoDb": {
-    "LocalMode": false
-  } 
 }

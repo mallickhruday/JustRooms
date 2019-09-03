@@ -73,7 +73,7 @@ namespace Accounts
                                     new ProvisionedThroughput(readCapacityUnits: 10, writeCapacityUnits:10),
                                     new Dictionary<string, ProvisionedThroughput>()
                                 ),
-                                billingMode: BillingMode.PAY_PER_REQUEST,
+                                billingMode: BillingMode.PROVISIONED,
                                 sseSpecification: new SSESpecification{Enabled = true},
                                 streamSpecification: new StreamSpecification
                                 {

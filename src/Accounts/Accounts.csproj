@@ -24,7 +24,7 @@
         <PackageReference Include="Paramore.Darker" Version="2.0.11" />
         <PackageReference Include="Paramore.Darker.AspNetCore" Version="2.0.11" />
         <PackageReference Include="Serilog.AspNetCore" Version="3.0.0-dev-00059" />
-        <PackageReference Include="Serilog.Sinks.Console" Version="3.1.2-dev-00806" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="3.1.2-dev-00823" />
         <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc2" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0-rc2" />
     </ItemGroup>
@@ -37,6 +37,10 @@
       <Reference Include="Paramore.Brighter.DynamoDb.Extensions, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b90f5623ae237e2c">
         <HintPath>..\..\lib\Brighter\netstandard2.0\Paramore.Brighter.DynamoDb.Extensions.dll</HintPath>
       </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="lib\.DS_Store" />
     </ItemGroup>
 
 </Project>

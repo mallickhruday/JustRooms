@@ -4,6 +4,7 @@ using Accounts.Ports.Handlers;
 using Accounts.Ports.Policies;
 using Accounts.Ports.Repositories;
 using Amazon.DynamoDBv2;
+using Amazon.Runtime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -30,16 +31,11 @@ namespace Accounts
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var dynamoDbConfig = Configuration.GetSection("DynamoDb");
-            var runLocalDynamoDb = dynamoDbConfig.GetValue<bool>("LocalMode");
+            var useLocalAwsServices = Configuration.GetValue<bool>("AWS:UseLocalServices");
             
-            if (runLocalDynamoDb)
+            if (useLocalAwsServices)
             {
-                services.AddSingleton<IAmazonDynamoDB>(sp =>
-                {
-                    var clientConfig = new AmazonDynamoDBConfig { ServiceURL = dynamoDbConfig.GetValue<string>("LocalServiceUrl") };
-                    return new AmazonDynamoDBClient(clientConfig);
-                });
+                services.AddSingleton<IAmazonDynamoDB>(sp => CreateClient());
             }
             else
             {
@@ -94,5 +90,15 @@ namespace Accounts
             app.UseHttpsRedirection();
             app.UseMvc();
         }
+        private IAmazonDynamoDB CreateClient()
+        {
+            var accessKey = Configuration.GetValue<string>("AWS_ACCESS_KEY_ID");
+            var accessSecret = Configuration.GetValue<string>("AWS_SECRET_ACCESS_KEY");
+            var credentials = new BasicAWSCredentials(accessKey, accessSecret);
+            var serviceUrl = Configuration.GetValue<string>("DynamoDb:LocalServiceUrl");
+            var clientConfig = new AmazonDynamoDBConfig { ServiceURL = serviceUrl };
+            return new AmazonDynamoDBClient(credentials, clientConfig);
+        }
+
     }
 }

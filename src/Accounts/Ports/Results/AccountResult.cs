@@ -4,6 +4,8 @@ using Accounts.Application;
 
 namespace Accounts.Ports.Results
 {
+    //TODO: Technically we should not pass back the application types here, but a DTO
+    //We might weant to consider Automapper, though it is could be overkill
     public class AccountResult
     {
         public AccountResult(Account account)

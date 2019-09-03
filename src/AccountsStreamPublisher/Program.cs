@@ -9,6 +9,7 @@ using AccountsTransferWorker.Ports.Mappers;
 using AccountsTransferWorker.Ports.Streams;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using Amazon.Runtime;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,107 +26,112 @@ namespace AccountsTransferWorker
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
-            var app = new CommandLineApplication();
-
-            app.HelpOption("-h|--help");
-            var optionEnvironment = app.Option(
-                "-e|--environment <ENVIRONMENT>", "Environment: Development, Staging, Production", 
-                CommandOptionType.SingleValue
-                );
-
-            app.OnExecuteAsync(async cancellationToken =>
+            var host = BuildHost();
+            try
             {
-                var environment = optionEnvironment.HasValue()
-                    ? optionEnvironment.Value()
-                    : "Development";
-                
-                await new HostBuilder()
-                    .UseEnvironment(environment)
-                    .ConfigureLogging(loggingBuilder => loggingBuilder.AddConsole())
-                    .ConfigureAppConfiguration((hostContext, configApp) =>
+                await host.RunAsync();
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+                return 1;
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+
+        private static IHost BuildHost()
+        {
+            return new HostBuilder()
+                .ConfigureLogging(loggingBuilder => loggingBuilder.AddConsole())
+                .ConfigureHostConfiguration((configurationBuilder) =>
+                {
+                    configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
+                    configurationBuilder.AddEnvironmentVariables(prefix: "ASP_");
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    var gatewayConnection = new KafkaMessagingGatewayConfiguration 
                     {
-                        configApp.SetBasePath(Directory.GetCurrentDirectory());
-                        configApp.AddJsonFile("appsettings.json", optional: true);
-                        configApp.AddJsonFile(
-                            $"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", 
-                            optional: true);
-                        configApp.AddEnvironmentVariables(prefix: "ATW_");
-                    })
-                    .ConfigureServices((hostContext, services) =>
+                        Name = "paramore.brighter.accounttransfer",
+                        BootStrapServers = new[] {"localhost:9092"}
+                    };
+                    
+                    var retryPolicy = Policy.Handle<Exception>().WaitAndRetry(new[] { TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(150) });
+                    var circuitBreakerPolicy = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromMilliseconds(500));
+                    var retryPolicyAsync = Policy.Handle<Exception>().WaitAndRetryAsync(new[] { TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(150) });
+                    var circuitBreakerPolicyAsync = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromMilliseconds(500));
+                    var policyRegistry = new PolicyRegistry()
                     {
-                        var gatewayConnection = new KafkaMessagingGatewayConfiguration 
+                        { CommandProcessor.RETRYPOLICY, retryPolicy },
+                        { CommandProcessor.CIRCUITBREAKER, circuitBreakerPolicy },
+                        { CommandProcessor.RETRYPOLICYASYNC, retryPolicyAsync },
+                        { CommandProcessor.CIRCUITBREAKERASYNC, circuitBreakerPolicyAsync }
+                    };
+
+                    services.AddSingleton<IReadOnlyPolicyRegistry<string>>(policyRegistry);
+                    var producer = new KafkaMessageProducerFactory(gatewayConnection).Create();
+                    services
+                        .AddBrighter(options =>
                         {
-                            Name = "paramore.brighter.accounttransfer",
-                            BootStrapServers = new[] {"localhost:9092"}
-                        };
-                        
-                        var retryPolicy = Policy.Handle<Exception>().WaitAndRetry(new[] { TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(150) });
-                        var circuitBreakerPolicy = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromMilliseconds(500));
-                        var retryPolicyAsync = Policy.Handle<Exception>().WaitAndRetryAsync(new[] { TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(150) });
-                        var circuitBreakerPolicyAsync = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromMilliseconds(500));
-                        var policyRegistry = new PolicyRegistry()
-                        {
-                            { CommandProcessor.RETRYPOLICY, retryPolicy },
-                            { CommandProcessor.CIRCUITBREAKER, circuitBreakerPolicy },
-                            { CommandProcessor.RETRYPOLICYASYNC, retryPolicyAsync },
-                            { CommandProcessor.CIRCUITBREAKERASYNC, circuitBreakerPolicyAsync }
-                        };
+                            options.PolicyRegistry = policyRegistry;
+                            options.BrighterMessaging = new BrighterMessaging(new InMemoryMessageStore(), producer);
+                        })
+                        .MapperRegistryFromAssemblies(typeof(AccountEventMessageMapper).Assembly);
 
-                        services.AddSingleton<IReadOnlyPolicyRegistry<string>>(policyRegistry);
-                        var producer = new KafkaMessageProducerFactory(gatewayConnection).Create();
-                        services
-                            .AddBrighter(options =>
-                            {
-                                options.PolicyRegistry = policyRegistry;
-                                options.BrighterMessaging = new BrighterMessaging(new InMemoryMessageStore(), producer);
-                            })
-                            .MapperRegistryFromAssemblies(typeof(AccountEventMessageMapper).Assembly);
+                    var useLocalAwsServices = hostContext.Configuration.GetValue<bool>("AWS:UseLocalServices");
 
-                        var dynamoDbConfig = hostContext.Configuration.GetSection("DynamoDb");
-                        var runLocalDynamoDb = dynamoDbConfig.GetValue<bool>("LocalMode");
+                    if (useLocalAwsServices )
+                    { 
+                        services.AddSingleton<IAmazonDynamoDB>(sp => CreateClient(hostContext.Configuration));
+                        services.AddSingleton<IAmazonDynamoDBStreams>(sp => CreateStreamClient(hostContext.Configuration));
+                    }
+                    else
+                    { 
+                        services.AddAWSService<IAmazonDynamoDB>();
+                        services.AddAWSService<IAmazonDynamoDBStreams>();
+                    }
+                    
+                    var translatorRegistry = new RecordTranslatorRegistry(new TranslatorFactory());
+                    translatorRegistry.Add(typeof(AccountEvent), typeof(AccountFromRecordTranslator));
 
-                        if (runLocalDynamoDb)
-                        { 
-                            services.AddSingleton<IAmazonDynamoDB>(sp =>
-                            { 
-                                var clientConfig = new AmazonDynamoDBConfig
-                                {
-                                    ServiceURL = dynamoDbConfig.GetValue<string>("LocalServiceUrl")
-                                };
-                                return new AmazonDynamoDBClient(clientConfig);
-                            });
-                            services.AddSingleton<IAmazonDynamoDBStreams>(sp =>
-                            { 
-                                var clientConfig = new AmazonDynamoDBStreamsConfig
-                                {
-                                    ServiceURL = dynamoDbConfig.GetValue<string>("LocalServiceUrl")
-                                };
-                                return new AmazonDynamoDBStreamsClient(clientConfig);
-                            });
-                        }
-                        else
-                        { 
-                            services.AddAWSService<IAmazonDynamoDB>();
-                            services.AddAWSService<IAmazonDynamoDBStreams>();
-                        }
-                        
-                        var translatorRegistry = new RecordTranslatorRegistry(new TranslatorFactory());
-                        translatorRegistry.Add(typeof(AccountEvent), typeof(AccountFromRecordTranslator));
+                    services.AddSingleton<RecordTranslatorRegistry>(translatorRegistry);
+                    services.AddSingleton<IRecordProcessor<StreamRecord>, DynamoDbRecordProcessor>();
+                    services.AddSingleton<IStreamReader, DynamoStreamReader>();       
+                    services.AddHostedService<Pump>();
+                })
+                .UseSerilog()
+                .UseConsoleLifetime()
+                .Build();
+        }
 
-                        services.AddSingleton<RecordTranslatorRegistry>(translatorRegistry);
-                        services.AddSingleton<IRecordProcessor<StreamRecord>, DynamoDbRecordProcessor>();
-                        services.AddSingleton<IStreamReader, DynamoStreamReader>();       
-                        services.AddHostedService<Pump>();
-                    })
-                    .UseSerilog()
-                    .UseConsoleLifetime()
-                    .Build()
-                    .RunAsync(cancellationToken);
-                });
+        private static IAmazonDynamoDB CreateClient(IConfiguration configuration)
+        {
+            var credentials = GetAwsCredentials(configuration);
+            var serviceUrl = configuration.GetValue<string>("DynamoDb:LocalServiceUrl");
+            var clientConfig = new AmazonDynamoDBConfig { ServiceURL = serviceUrl };
+            return new AmazonDynamoDBClient(credentials, clientConfig);
+        }
 
-            await app.ExecuteAsync(args);
+        private static IAmazonDynamoDBStreams CreateStreamClient(IConfiguration configuration)
+        {
+            var credentials = GetAwsCredentials(configuration);
+            var serviceUrl = configuration.GetValue<string>("DynamoDb:LocalServiceUrl");
+            var clientConfig = new AmazonDynamoDBStreamsConfig { ServiceURL = serviceUrl };
+            return new AmazonDynamoDBStreamsClient(credentials, clientConfig);
+        }
+        
+        private static BasicAWSCredentials GetAwsCredentials(IConfiguration configuration)
+        {
+            var accessKey = configuration.GetValue<string>("AWS_ACCESS_KEY_ID");
+            var accessSecret = configuration.GetValue<string>("AWS_SECRET_ACCESS_KEY");
+            var credentials = new BasicAWSCredentials(accessKey, accessSecret);
+            return credentials;
         }
     }
 }

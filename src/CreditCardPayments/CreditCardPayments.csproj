@@ -32,4 +32,11 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="lib\.DS_Store" />
+      <Content Include="lib\JustSaying.Models\.DS_Store" />
+      <Content Include="lib\JustSaying\.DS_Store" />
+      <Content Include="lib\JustSaying_Extensions_DepedencyInjection_Microsoft\.DS_Store" />
+    </ItemGroup>
+
 </Project>

@@ -9,16 +9,26 @@ namespace CreditCardsAccountStreamReader.Application
         public const string VersionPrefix = "V";
         
         [DynamoDBHashKey]
-        public string AccountId { get; }
-        public string CardNumber { get; }
-        public string CardSecurityCode { get; }
-        public string FirstLineOfAddress { get; }
-        public string Name { get; }
-        public string ZipCode { get; }
-        
+        [DynamoDBProperty]
+        public string AccountId { get; set; }
+        [DynamoDBProperty]
+        public string CardNumber { get; set; }
+        [DynamoDBProperty]
+        public string CardSecurityCode { get; set; }
+        [DynamoDBProperty]
+        public string FirstLineOfAddress { get; set; }
+        [DynamoDBProperty]
+        public string Name { get; set; }
+        [DynamoDBProperty]
+        public string ZipCode { get; set; }
+        [DynamoDBProperty]
         public int CurrentVersion { get; set; }
+        [DynamoDBProperty]
+        [DynamoDBRangeKey]
         public string Version { get; set; }
+        [DynamoDBProperty]
         public string LockedBy { get; set; }
+        [DynamoDBProperty]
         public string LockExpiresAt { get; set; }
 
 
