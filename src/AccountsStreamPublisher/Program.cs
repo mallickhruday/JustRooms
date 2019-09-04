@@ -21,6 +21,7 @@ using Paramore.Brighter.MessagingGateway.Kafka;
 using Polly;
 using Polly.Registry;
 using Serilog;
+using Serilog.Events;
 
 namespace AccountsTransferWorker
 {
@@ -28,6 +29,15 @@ namespace AccountsTransferWorker
     {
         static async Task<int> Main(string[] args)
         {
+            Environment.SetEnvironmentVariable("AWS_ENABLE_ENDPOINT_DISCOVERY", "false");
+             
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .CreateLogger();
+            
             var host = BuildHost();
             try
             {
