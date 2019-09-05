@@ -5,11 +5,20 @@ using Newtonsoft.Json.Linq;
 
 namespace Accounts.Application.Converters
 {
+    /// <summary>
+    /// Convert a Contact Details object into a DynamoDb property
+    /// </summary>
     public class ContactDetailsTypeConverter : IPropertyConverter
     {
         private const string TelephoneNumber = "telephoneNumber";
         private const string Email = "email";
 
+        /// <summary>
+        /// Convert a Contact Details object into a DynamoDb string property
+        /// </summary>
+        /// <param name="value">A ContactDetails object</param>
+        /// <returns>A DynamoDb string property</returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public DynamoDBEntry ToEntry(object value)
         {
             var name = value as ContactDetails;
@@ -26,6 +35,12 @@ namespace Accounts.Application.Converters
             return entry;
        }
 
+        /// <summary>
+        /// Convert from a DynamoDb string property into ContactDetails
+        /// </summary>
+        /// <param name="entry">A DynamoDb string property</param>
+        /// <returns>A ContactDetails object</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public object FromEntry(DynamoDBEntry entry)
         {
             var primitive = entry as Primitive;

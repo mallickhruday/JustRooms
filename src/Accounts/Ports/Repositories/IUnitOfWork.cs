@@ -5,12 +5,16 @@ using Accounts.Application;
 
 namespace Accounts.Ports.Repositories
 {
+    /// <summary>
+    /// An abstraction over a storage layer
+    /// </summary>
     public interface IUnitOfWork
     {
         /// <summary>
         /// Delete the item, all versions
         /// </summary>
         /// <param name="accountId">The account to delete</param>
+        /// <param name="version">The version to delete, defaults to the snapshot version, deleting visibility but preserving history</param>
         /// <param name="ct">Cancel the operation</param>
         Task DeleteAsync(Guid accountId, string version = Account.SnapShot, CancellationToken ct = default(CancellationToken));
          
@@ -23,7 +27,7 @@ namespace Accounts.Ports.Repositories
         /// <returns>THe matching account</returns>
         Task<Account> GetAsync(Guid accountId, string version = Account.SnapShot, CancellationToken ct = default(CancellationToken));
         
-         /// <summary> 
+        /// <summary> 
         /// Save the item
         /// </summary>
         /// <param name="account">The account to save</param>

@@ -8,21 +8,29 @@ using Amazon.DynamoDBv2.DataModel;
 
 namespace Accounts.Adapters.Data
 {
+    /// <summary>
+    /// A unit of work for AWS Dynamo Db
+    /// </summary>
     public class DynamoDbUnitOfWork : IUnitOfWork
     {
         private DynamoDBContext _context;
 
+        /// <summary>
+        /// Construct a unit of work from an AWS Dynamo client
+        /// </summary>
+        /// <param name="amazonDynamoDb">An AWS Dynamo DB Client instance</param>
         public DynamoDbUnitOfWork(IAmazonDynamoDB amazonDynamoDb)
         {
             _context = new DynamoDBContext(amazonDynamoDb);
         }
-       
+
         /// <summary>
-        /// Delete the item, all versions
+        /// Delete the item, by default the snapshot version, which deletes the live record, but keeps history
         /// </summary>
         /// <param name="accountId">The account to delete</param>
+        /// <param name="version">The version of the account to delete</param>
         /// <param name="ct">Cancel the operation</param>
-        public async Task DeleteAsync(Guid accountId, string version, CancellationToken ct = default(CancellationToken))
+        public async Task DeleteAsync(Guid accountId, string version = Account.SnapShot, CancellationToken ct = default(CancellationToken))
         {
             await _context.DeleteAsync<Account>(accountId.ToString(), version, ct);
         }

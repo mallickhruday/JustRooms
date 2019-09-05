@@ -18,8 +18,16 @@ using Serilog.Events;
 
 namespace Accounts
 {
+    /// <summary>
+    /// Manages account information
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Entry point
+        /// </summary>
+        /// <param name="args">Run time arguments</param>
+        /// <returns>0 indicates a successful exit, 1 an error</returns>
         public static async Task<int> Main(string[] args)
         {
              Environment.SetEnvironmentVariable("AWS_ENABLE_ENDPOINT_DISCOVERY", "false");

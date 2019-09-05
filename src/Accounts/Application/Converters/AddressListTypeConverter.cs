@@ -6,6 +6,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Accounts.Application.Converters
 {
+    /// <summary>
+    /// Used with DynamoDB's object model, serializes the complex type address to to the Db
+    /// </summary>
     public class AddressListTypeConverter : IPropertyConverter
     {
         private const string FirstLineOfAddress = "firstLineOfAddress";
@@ -13,6 +16,12 @@ namespace Accounts.Application.Converters
         private const string State = "state";
         private const string Zipcode = "zipCode";
 
+        /// <summary>
+        /// Concert a list of addresses to a DynamoDb list primitive 
+        /// </summary>
+        /// <param name="value">A List'Address' with the guest's different addresses</param>
+        /// <returns>A DynamoDb primitive list</returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public DynamoDBEntry ToEntry(object value)
         {
             var addresses = value as List<Address>;
@@ -40,6 +49,12 @@ namespace Accounts.Application.Converters
             return list;
         }
 
+        /// <summary>
+        /// Builds a List'Address' from a DynamoDb primitive list
+        /// </summary>
+        /// <param name="entry">A DynamoDb primitive list</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <returns>An object that is a List'Address'</returns>
         public object FromEntry(DynamoDBEntry entry)
         {
             var list = entry as DynamoDBList;

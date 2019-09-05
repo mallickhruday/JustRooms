@@ -7,10 +7,19 @@ using Accounts.Ports.Repositories;
 
 namespace Accounts.Adapters.Data
 {
+    /// <summary>
+    /// An in-memory unit of work, for use in testing
+    /// </summary>
     public class InMemoryUnitOfWork : IUnitOfWork
     {
         private Dictionary<Item, Account> _accounts = new Dictionary<Item, Account>();
         
+       /// <summary>
+       /// Remove a guest account version, by default the snapshot which deletes the 'live' account but preserves history
+       /// </summary>
+       /// <param name="accountId">The account to mark as deleted</param>
+       /// <param name="version">The version of the guest account to remove, defaults to the current snapshot which deletes the account</param>
+       /// <param name="ct">Token to allow cancelling the ongoing operation</param>
         public Task DeleteAsync(Guid accountId, string version = Account.SnapShot, CancellationToken ct = default(CancellationToken))
         {
             var tcs = new TaskCompletionSource<object>();
@@ -24,6 +33,12 @@ namespace Accounts.Adapters.Data
             return tcs.Task;
         }
 
+       /// <summary>
+       /// Get an account by id (and version number)
+       /// </summary>
+       /// <param name="accountId">The id of the account to retrieve</param>
+       /// <param name="version">The version to retrieve, by default it is the snapshot i.e. current live record</param>
+       /// <param name="ct">Token to allow cancelling the ongoing operation</param>
         public Task<Account> GetAsync(Guid accountId, string version = Account.SnapShot, CancellationToken ct = default(CancellationToken))
         {
             var tcs = new TaskCompletionSource<Account>();
@@ -33,6 +48,11 @@ namespace Accounts.Adapters.Data
          }
 
        
+        /// <summary>
+        /// Save the account record
+        /// </summary>
+        /// <param name="account">The account to save</param>
+        /// <param name="ct">Token to allow cancelling the ongoing operation</param>
         public Task SaveAsync(Account account, CancellationToken ct = default(CancellationToken))
         {
             var tcs = new TaskCompletionSource<object>();

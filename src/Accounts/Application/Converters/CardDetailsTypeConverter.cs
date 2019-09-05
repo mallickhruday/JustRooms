@@ -5,11 +5,20 @@ using Newtonsoft.Json.Linq;
 
 namespace Accounts.Application.Converters
 {
+    /// <summary>
+    /// Convert card details composite type into a DynameDb type
+    /// </summary>
     public class CardDetailsTypeConverter : IPropertyConverter
     {
         private const string CardNumber = "cardNumber";
         private const string CardSecurityCode = "cardSecurityCode";
 
+        /// <summary>
+        /// Convert card details into a DynamoDb entry
+        /// </summary>
+        /// <param name="value">The CardDetails object to convert</param>
+        /// <returns>A DynamoDb string property</returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public DynamoDBEntry ToEntry(object value)
         {
             var cardDetails = value as CardDetails;
@@ -29,6 +38,12 @@ namespace Accounts.Application.Converters
             return entry;
         }
 
+        /// <summary>
+        /// Convert from a DynamoDb entry into a CardDetails objecgt
+        /// </summary>
+        /// <param name="entry">A DynamoDb entry</param>
+        /// <returns>A CardDetails object</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public object FromEntry(DynamoDBEntry entry)
         {
             var primitive = entry as Primitive;

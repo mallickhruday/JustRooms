@@ -6,6 +6,9 @@ using Accounts.Application;
 
 namespace Accounts.Ports.Repositories
 {
+    /// <summary>
+    /// A pessimistic lock on an account record
+    /// </summary>
     public class AggregateLock 
     {
         private readonly string _accountId;
@@ -13,6 +16,13 @@ namespace Accounts.Ports.Repositories
         private readonly DateTime _expiresAt;
         private readonly IUnitOfWork _unitOfWork;
 
+        /// <summary>
+        /// Constructs an aggregate lock - don't use this directly, ask a repository to give you a lock
+        /// </summary>
+        /// <param name="accountId">The account that has been locked</param>
+        /// <param name="lockedBy">Who has locked the account</param>
+        /// <param name="expiresAt">When does the lock expire</param>
+        /// <param name="unitOfWork">A unit of work over the storage of accounts</param>
         public AggregateLock(string accountId, string lockedBy, DateTime expiresAt, IUnitOfWork unitOfWork)
         {
             _accountId = accountId;
@@ -21,6 +31,11 @@ namespace Accounts.Ports.Repositories
             _unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Releases the lock on the account
+        /// </summary>
+        /// <param name="ct">A token that allows the operation to be cancelled</param>
+        /// <returns></returns>
         public async Task ReleaseAsync(CancellationToken ct = default(CancellationToken))
         {
             var snapshot = await _unitOfWork.GetAsync(Guid.Parse(_accountId), Account.SnapShot, ct);

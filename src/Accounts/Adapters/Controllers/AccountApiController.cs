@@ -13,17 +13,31 @@ using Paramore.Darker;
 
 namespace Accounts.Adapters.Controllers
 {
+    /// <summary>
+    /// Manages guests accounts
+    /// </summary>
     public class AccountApiController : Controller
     {
         private readonly IAmACommandProcessor _commandProcessor;
         private readonly IQueryProcessor _queryProcessor;
 
+        /// <summary>
+        /// Manages guest accounts
+        /// </summary>
+        /// <param name="commandProcessor">The Brighter Command Processor used to decouple to a Clean Architecture</param>
+        /// <param name="queryProcessor">The Darker Command Processor used to decouple to a Clean Architecture</param>
         public AccountApiController(IAmACommandProcessor commandProcessor, IQueryProcessor queryProcessor)
         {
             _commandProcessor = commandProcessor;
             _queryProcessor = queryProcessor;
         }
 
+        /// <summary>
+        /// Marks a guest account as deleted
+        /// </summary>
+        /// <param name="id">The id of the guest account</param>
+        /// <param name="ct">Cancellation token to halt an ongoing request</param>
+        /// <returns></returns>
         [HttpDelete("/accounts/{id}", Name = "Delete_Account")]
         public async Task<IActionResult> Delete(string id, CancellationToken ct)
         {
@@ -31,7 +45,13 @@ namespace Accounts.Adapters.Controllers
             await _commandProcessor.SendAsync(deleteExistingAccountCommand, false, ct);
             return Ok();
         }
-
+        
+        /// <summary>
+        /// Gets the details of a guest account
+        /// </summary>
+        /// <param name="id">The id of the guest account</param>
+        /// <param name="ct">Cancellation token to halt an ongoing request</param>
+        /// <returns></returns>
         [HttpGet("/accounts/{id}", Name = "Get_Account")]
         public async Task<IActionResult> Get(string id, CancellationToken ct)
         {
@@ -40,6 +60,12 @@ namespace Accounts.Adapters.Controllers
             return Ok(AccountDTO.FromQueryResult(account));
         }
         
+        /// <summary>
+        /// Create a new guest account
+        /// </summary>
+        /// <param name="accountDto">The guest's details</param>
+        /// <param name="ct">Cancellation token to halt an ongoing request</param>
+        /// <returns></returns>
         [HttpPost("/accounts", Name = "Add_Account")]
         public async Task<IActionResult> Post([FromBody]AccountDTO accountDto, CancellationToken ct)
         {
@@ -61,6 +87,13 @@ namespace Accounts.Adapters.Controllers
             return Ok(AccountDTO.FromQueryResult(account));
         }
 
+        /// <summary>
+        /// Update an existing guest account
+        /// </summary>
+        /// <param name="id">The id of the guest account to update</param>
+        /// <param name="accountDto">The guest's new details</param>
+        /// <param name="ct">Cancellation token to halt an ongoing request</param>
+        /// <returns></returns>
         [HttpPut("/accounts/{id}", Name = "Update_Account")]
         public async Task<IActionResult> Put(string id, [FromBody]AccountDTO accountDto, CancellationToken ct)
         {

@@ -10,15 +10,28 @@ using Paramore.Brighter.Policies.Attributes;
 
 namespace Accounts.Ports.Handlers
 {
+    /// <summary>
+    /// Handles request to update an existing guest account
+    /// </summary>
     public class UpdateExistingAccountCommandHandlerAsync : RequestHandlerAsync<UpdateExistingAccountCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
 
+        /// <summary>
+        /// Constructs a handler for updating guest accounts
+        /// </summary>
+        /// <param name="unitOfWork">The unit of work that lets us right to storage</param>
         public UpdateExistingAccountCommandHandlerAsync(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Handle a request to update an existing account
+        /// </summary>
+        /// <param name="command">The details of the account to be updated and the new details</param>
+        /// <param name="cancellationToken">A token that allows us to cancel an ongoing operation</param>
+        /// <returns></returns>
         [RequestLoggingAsync(step:0, HandlerTiming.Before)]
         [UsePolicyAsync(Policies.Catalog.DynamoDbAccess, step: 0)]
         public override async Task<UpdateExistingAccountCommand> HandleAsync(UpdateExistingAccountCommand command, CancellationToken cancellationToken = new CancellationToken())

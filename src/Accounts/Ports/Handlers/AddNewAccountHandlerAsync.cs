@@ -9,15 +9,28 @@ using Paramore.Brighter.Policies.Attributes;
 
 namespace Accounts.Ports.Handlers
 {
+    /// <summary>
+    /// Handler for add new Accounts
+    /// </summary>
     public class AddNewAccountHandlerAsync : RequestHandlerAsync<AddNewAccountCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
 
+        /// <summary>
+        /// Construct an add new Account handler
+        /// </summary>
+        /// <param name="unitOfWork">A unit of work, used to talk to the storage layer</param>
         public AddNewAccountHandlerAsync(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
         
+        /// <summary>
+        /// Handle a request to add a guest account
+        /// </summary>
+        /// <param name="command">The request to add a guest account</param>
+        /// <param name="cancellationToken">Cancel an ongoing operatioin</param>
+        /// <returns>Passes the command to the next handler in the chain</returns>
         [RequestLoggingAsync(step:0, HandlerTiming.Before)]
         [UsePolicyAsync(Policies.Catalog.DynamoDbAccess, step: 0)]
         public override async Task<AddNewAccountCommand> HandleAsync(AddNewAccountCommand command, CancellationToken cancellationToken = new CancellationToken())

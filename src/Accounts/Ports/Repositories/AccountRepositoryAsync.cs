@@ -8,10 +8,16 @@ using Accounts.Ports.Exceptions;
 
 namespace Accounts.Ports.Repositories
 {
+    /// <summary>
+    /// Manages a collection of guest accounts
+    /// </summary>
     public class AccountRepositoryAsync 
     {
         private readonly IUnitOfWork _unitOfWork;
 
+        /// <summary>
+        /// Constructs a guest account repository
+        /// </summary>
         public AccountRepositoryAsync(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -99,8 +105,9 @@ namespace Accounts.Ports.Repositories
         /// <summary>
         /// Update an account
         /// </summary>
-        /// <param name="account">The updated account</param>
-        /// <param name="ct">Operation cancellation</param>
+        /// <param name="newAccountVersion">The new account version</param>
+        /// <param name="aggregateLock">A pessimistic lock, retrieved from a Lock call, that allows us to update this guest account</param>
+        /// <param name="ct">A token for operation cancellation</param>
         public async Task UpdateAsync(Account newAccountVersion, AggregateLock aggregateLock, CancellationToken ct = default(CancellationToken))
         {
             //find the next version to use

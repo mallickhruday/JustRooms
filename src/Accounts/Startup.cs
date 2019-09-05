@@ -19,16 +19,29 @@ using Polly.Registry;
 
 namespace Accounts
 {
+    /// <summary>
+    /// Configure the WebHost
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Get the configuration data for the host
+        /// </summary>
         public IConfiguration Configuration { get; }
         
+        /// <summary>
+        /// Sets the configuration for the bost
+        /// </summary>
+        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container. 
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             var useLocalAwsServices = Configuration.GetValue<bool>("AWS:UseLocalServices");
@@ -71,10 +84,31 @@ namespace Accounts
             services.AddDarker()
                 .AddHandlersFromAssemblies(typeof(GetAccountByIdHandlerAsync).Assembly);
 
+            services.AddOpenApiDocument(config =>
+            {
+                config.PostProcess = document =>
+                {
+                    document.Info.Version = "v1";
+                    document.Info.Title = "Accounts API";
+                    document.Info.Description = "Hotel customers who have accounts with us";
+                    document.Info.TermsOfService = "None";
+                    document.Info.Contact = new NSwag.OpenApiContact
+                    {
+                        Name = "Ian Cooper",
+                        Email = string.Empty,
+                        Url = "https://twitter.com/icooper"
+                    };
+                };
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -88,8 +122,11 @@ namespace Accounts
 
             app.UseStatusCodePages();
             app.UseHttpsRedirection();
+            app.UseOpenApi(); 
+            app.UseSwaggerUi3();
             app.UseMvc();
         }
+        
         private IAmazonDynamoDB CreateClient()
         {
             var accessKey = Configuration.GetValue<string>("AWS_ACCESS_KEY_ID");
