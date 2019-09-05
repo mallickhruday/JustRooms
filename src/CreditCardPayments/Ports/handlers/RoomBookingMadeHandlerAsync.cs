@@ -5,7 +5,7 @@ using JustSaying.Messaging.MessageHandling;
 
 namespace JustRooms.DirectBookingEventConsumer.Ports.handlers
 {
-    public class RoomBookingMadeHandler : IHandlerAsync<GuestRoomBookingMade>
+    public class RoomBookingMadeHandlerAsync : IHandlerAsync<GuestRoomBookingMade>
     {
         public Task<bool> Handle(GuestRoomBookingMade booking)
         {

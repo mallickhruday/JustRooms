@@ -32,7 +32,7 @@ namespace JustRooms.DirectBookingEventConsumer
                         });
                         config.Subscriptions(x => { x.ForTopic<GuestRoomBookingMade>("guestroombookingmade"); });
                     });
-                    services.AddJustSayingHandler<GuestRoomBookingMade, RoomBookingMadeHandler>();
+                    services.AddJustSayingHandler<GuestRoomBookingMade, RoomBookingMadeHandlerAsync>();
                     services.AddHostedService<Performer>();
                 })
                 .UseConsoleLifetime()

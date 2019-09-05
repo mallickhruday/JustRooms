@@ -10,7 +10,7 @@ namespace JustRooms.DirectBookingEventConsumer.adapters.di
         {
             if (context.QueueName == Globals.BOOKING_QUEUE_NAME)
             {
-                return (IHandlerAsync<T>) new RoomBookingMadeHandler();
+                return (IHandlerAsync<T>) new RoomBookingMadeHandlerAsync();
             }
             else
             {

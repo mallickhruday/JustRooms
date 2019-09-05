@@ -14,7 +14,7 @@ namespace Tests.DirectBooking.adapters.data
             //arrange
             
             
-            var booking = new GuestRoomBookingOnAccount
+            var booking = new RoomBooking
             {
                 BookingId = Guid.NewGuid(),
                 DateOfFirstNight = new DateTime(2019, 07, 11),

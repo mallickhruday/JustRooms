@@ -5,7 +5,7 @@ namespace DirectBooking.adapters.controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GuestBookingController : ControllerBase
+    public class DirectBookingController : ControllerBase
     {
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
