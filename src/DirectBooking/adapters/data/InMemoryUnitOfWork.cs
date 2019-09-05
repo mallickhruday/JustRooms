@@ -57,7 +57,7 @@ namespace DirectBooking.adapters.data
         {
             var tcs = new TaskCompletionSource<object>();
             
-            var key = new Item( booking.BookingId, booking.Version);
+            var key = new Item( Guid.Parse(booking.BookingId), booking.Version);
             if ( _bookings.ContainsKey(key))
             {
                 _bookings.Remove(key);

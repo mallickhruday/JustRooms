@@ -1,5 +1,6 @@
 using System;
 using Amazon.DynamoDBv2.DataModel;
+using DirectBooking.application.converters;
 
 namespace DirectBooking.application
 {
@@ -24,7 +25,7 @@ namespace DirectBooking.application
         /// </summary>
         [DynamoDBHashKey]
         [DynamoDBProperty]
-        public Guid BookingId { get; set; }
+        public string BookingId { get; set; }
         
         /// <summary>
         /// The date of the first night of the stay
@@ -51,12 +52,12 @@ namespace DirectBooking.application
         /// <summary>
         /// The price per night of the booking
         /// </summary>
+        [DynamoDBProperty(typeof(MoneyTypeConverter))]
         public Money Price { get; set; }
         
         /// <summary>
         /// The account that the booking is for, if any
         /// </summary>
-        [DynamoDBRangeKey]
         [DynamoDBProperty]
         public string AccountId { get; set; }
         
@@ -92,7 +93,7 @@ namespace DirectBooking.application
         public RoomBooking(){}
         
         public RoomBooking(
-            Guid bookingId,
+            string bookingId,
             DateTime dateOfFirstNight,
             int numberOfNights,
             int numberOfGuests,

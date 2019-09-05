@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Amazon.SQS.Model;
 using DirectBooking.adapters.data;
 using DirectBooking.application;
 using DirectBooking.ports.commands;
@@ -30,7 +29,7 @@ namespace JustRoomsTests.DirectBooking.ports.handlers
             //arrange
             var booking = new BookGuestRoomOnAccount()
             {
-                BookingId = Guid.NewGuid(),
+                BookingId = Guid.NewGuid().ToString(),
                 AccountId = Guid.NewGuid().ToString(),
                 DateOfFirstNight = DateTime.UtcNow,
                 NumberOfNights = 1,
@@ -46,7 +45,7 @@ namespace JustRoomsTests.DirectBooking.ports.handlers
             //act
             await handler.HandleAsync(booking);
 
-            var savedBooking = await _unitOfWork.GetAsync(booking.BookingId);
+            var savedBooking = await _unitOfWork.GetAsync(Guid.Parse(booking.BookingId));
             Assert.That(savedBooking.BookingId, Is.EqualTo(booking.BookingId));
             Assert.That(savedBooking.DateOfFirstNight, Is.EqualTo(booking.DateOfFirstNight));
             Assert.That(savedBooking.NumberOfNights, Is.EqualTo(booking.NumberOfNights));

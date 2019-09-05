@@ -29,7 +29,7 @@ namespace JustRooms.GuestDirectBooking.adapters.bus
                 {
                     await _publisher.PublishAsync(new GuestRoomBookingMade
                     {
-                        BookingId = Guid.NewGuid(),
+                        BookingId = Guid.NewGuid().ToString(),
                         DateOfFirstNight = DateTime.UtcNow.AddDays(30),
                         Type = RoomType.King,
                         Price = new Money(150, "USD"),

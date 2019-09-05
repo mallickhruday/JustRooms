@@ -12,7 +12,7 @@ namespace DirectBooking.ports.commands
         /// <summary>
         /// The id for  this booking
         /// </summary>
-        public Guid BookingId { get; set; }
+        public string BookingId { get; set; }
         
         /// <summary>
         /// The first night's  stay
