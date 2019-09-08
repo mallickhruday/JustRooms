@@ -1,11 +1,13 @@
 using System;
 using DirectBooking.application;
-using JustSaying.Models;
+using Paramore.Brighter;
 
 namespace DirectBooking.ports.events
 {
-    public class GuestRoomBookingMade : Message
+    public class GuestRoomBookingMade : Event
     {
+        public GuestRoomBookingMade() : base(Guid.NewGuid()) {}
+        
         public string BookingId { get; set; }
         public DateTime DateOfFirstNight { get; set; }
         public RoomType Type { get; set; }

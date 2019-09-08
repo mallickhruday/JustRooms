@@ -69,7 +69,7 @@ namespace DirectBooking
             {
                 var dbBuilder = scope.ServiceProvider.GetService<DynamoDbTableBuilder>();
                 var hasTables = await dbBuilder.HasTables(new string[] {"RoomBooking"});
-                if (!hasTables.exist)
+                if (!hasTables.Item1)
                 {
                     await dbBuilder.Build(
                         new DynamoDbTableFactory()

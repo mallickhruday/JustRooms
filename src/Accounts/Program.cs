@@ -72,7 +72,7 @@ namespace Accounts
             {
                 var dbBuilder = scope.ServiceProvider.GetService<DynamoDbTableBuilder>();
                 var hasTables = await dbBuilder.HasTables(new string[]{"Accounts"});
-                if (!hasTables.exist)
+                if (!hasTables.Item1)
                 {
                     await dbBuilder.Build(
                         new DynamoDbTableFactory()

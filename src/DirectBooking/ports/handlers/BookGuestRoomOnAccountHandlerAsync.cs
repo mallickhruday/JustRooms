@@ -4,7 +4,6 @@ using DirectBooking.application;
 using DirectBooking.ports.commands;
 using DirectBooking.ports.events;
 using DirectBooking.ports.repositories;
-using JustSaying.Messaging;
 using Paramore.Brighter;
 
 namespace DirectBooking.ports.handlers
@@ -12,9 +11,9 @@ namespace DirectBooking.ports.handlers
     public class BookGuestRoomOnAccountHandlerAsync : RequestHandlerAsync<BookGuestRoomOnAccount>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMessagePublisher _messagePublisher;
+        private readonly IAmACommandProcessor _messagePublisher;
 
-        public BookGuestRoomOnAccountHandlerAsync(IUnitOfWork unitOfWork, IMessagePublisher messagePublisher)
+        public BookGuestRoomOnAccountHandlerAsync(IUnitOfWork unitOfWork, IAmACommandProcessor messagePublisher)
         {
             _unitOfWork = unitOfWork;
             _messagePublisher = messagePublisher;
@@ -34,7 +33,7 @@ namespace DirectBooking.ports.handlers
             
             await repository.AddAsync(roomBooking, cancellationToken);
 
-            await _messagePublisher.PublishAsync(new GuestRoomBookingMade
+            await _messagePublisher.PostAsync(new GuestRoomBookingMade
             {
                 BookingId = roomBooking.BookingId,
                 DateOfFirstNight = roomBooking.DateOfFirstNight,
@@ -43,7 +42,7 @@ namespace DirectBooking.ports.handlers
                 Type = roomBooking.RoomType,
                 Price = roomBooking.Price,
                 AccountId = roomBooking.AccountId,
-            }, null, cancellationToken);
+            }, false, cancellationToken);
             
             return await base.HandleAsync(command, cancellationToken);
         }

@@ -7,8 +7,8 @@ using DirectBooking.ports.commands;
 using DirectBooking.ports.events;
 using DirectBooking.ports.handlers;
 using FakeItEasy;
-using JustSaying.Messaging;
 using NUnit.Framework;
+using Paramore.Brighter;
 
 namespace JustRoomsTests.DirectBooking.ports.handlers
 {
@@ -39,7 +39,7 @@ namespace JustRoomsTests.DirectBooking.ports.handlers
                 
             };
 
-            var messagePublisher = A.Fake<IMessagePublisher>();
+            var messagePublisher = A.Fake<IAmACommandProcessor>();
             var handler = new BookGuestRoomOnAccountHandlerAsync(_unitOfWork, messagePublisher);
 
             //act
@@ -54,7 +54,7 @@ namespace JustRoomsTests.DirectBooking.ports.handlers
             Assert.That(savedBooking.Price, Is.EqualTo(booking.Price));
             Assert.That(savedBooking.AccountId, Is.EqualTo(booking.AccountId));
 
-            A.CallTo(() => messagePublisher.PublishAsync(A<GuestRoomBookingMade>._, A<PublishMetadata>._, A<CancellationToken>._)).MustHaveHappened();
+            A.CallTo(() => messagePublisher.PostAsync(A<GuestRoomBookingMade>._, A<bool>._, A<CancellationToken>._)).MustHaveHappened();
         }
 
     }

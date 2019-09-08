@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Paramore.Brighter.DynamoDb.Extensions</id>
+    <version>9.0.0</version>
+    <authors>Ian Cooper</authors>
+    <owners>Ian Cooper</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <projectUrl>https://www.goparamore.io/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/BrighterCommand/Brighter/master/images/brightercanon-nuget.png</iconUrl>
+    <description>Package Description</description>
+    <releaseNotes>https://github.com/BrighterCommand/Brighter/blob/master/release_notes.md</releaseNotes>
+    <copyright>Copyright © Ian Cooper 2014</copyright>
+    <repository type="git" url="https://github.com/BrighterCommand/Brighter.git" commit="c6f4e8cc8a7b1b8fa1c42cd30213ff2280eb0bf2" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="AWSSDK.DynamoDBv2" version="3.3.101.62" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

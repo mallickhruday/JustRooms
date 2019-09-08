@@ -46,7 +46,7 @@ namespace CreditCardsAccountStreamReader
             {
                 var dbBuilder = scope.ServiceProvider.GetService<DynamoDbTableBuilder>();
                 var hasTables = await dbBuilder.HasTables(new string[] {"CardDetails"});
-                if (!hasTables.exist)
+                if (!hasTables.Item1)
                 {
                     await dbBuilder.Build(
                          new DynamoDbTableFactory()

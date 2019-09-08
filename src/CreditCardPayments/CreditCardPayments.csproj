@@ -10,33 +10,23 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AWSSDK.Core" Version="3.3.103.31" />
-      <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.101.58" />
+      <PackageReference Include="AWSSDK.Core" Version="3.3.103.35" />
+      <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.101.62" />
       <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.3.101.52" />
       <PackageReference Include="AWSSDK.SQS" Version="3.3.100.63" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0-preview8.19405.4" />
       <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-      <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection" Version="2.0.4" />
-      <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.Hosting" Version="2.0.4" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="JustSaying, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\lib\JustSaying\JustSaying.dll</HintPath>
-      </Reference>
-      <Reference Include="JustSaying.Extensions.DependencyInjection.Microsoft, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\lib\JustSaying_Extensions_DepedencyInjection_Microsoft\JustSaying.Extensions.DependencyInjection.Microsoft.dll</HintPath>
-      </Reference>
-      <Reference Include="JustSaying.Models, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\lib\JustSaying.Models\JustSaying.Models.dll</HintPath>
-      </Reference>
+      <PackageReference Include="Paramore.Brighter" Version="9.0.0" />
+      <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection" Version="3.0.0" />
+      <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.Hosting" Version="3.0.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Include="lib\.DS_Store" />
-      <Content Include="lib\JustSaying.Models\.DS_Store" />
-      <Content Include="lib\JustSaying\.DS_Store" />
-      <Content Include="lib\JustSaying_Extensions_DepedencyInjection_Microsoft\.DS_Store" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="adapters\bus" />
     </ItemGroup>
 
 </Project>

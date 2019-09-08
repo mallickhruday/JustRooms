@@ -11,6 +11,8 @@
         <PackageReference Include="nunit" Version="3.11.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+        <PackageReference Include="Paramore.Brighter" Version="9.0.0" />
+        <PackageReference Include="Paramore.Brighter.DynamoDb.Extensions" Version="9.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -18,18 +20,6 @@
       <ProjectReference Include="..\..\src\CreditCardPayments\CreditCardPayments.csproj" />
       <ProjectReference Include="..\..\src\CreditCardsAccountStreamReader\CreditCardsAccountStreamReader.csproj" />
       <ProjectReference Include="..\..\src\DirectBooking\DirectBooking.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="JustSaying, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>lib\JustSaying\JustSaying.dll</HintPath>
-      </Reference>
-      <Reference Include="JustSaying.Models, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>lib\JustSaying\JustSaying.Models.dll</HintPath>
-      </Reference>
-      <Reference Include="Paramore.Brighter.DynamoDb.Extensions, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b90f5623ae237e2c">
-        <HintPath>..\..\lib\Brighter\netstandard2.0\Paramore.Brighter.DynamoDb.Extensions.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
 </Project>

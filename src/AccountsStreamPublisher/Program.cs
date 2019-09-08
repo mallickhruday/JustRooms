@@ -90,7 +90,7 @@ namespace AccountsTransferWorker
                         .AddBrighter(options =>
                         {
                             options.PolicyRegistry = policyRegistry;
-                            options.BrighterMessaging = new BrighterMessaging(new InMemoryMessageStore(), producer);
+                            options.BrighterMessaging = new BrighterMessaging(new InMemoryOutbox(), producer);
                         })
                         .MapperRegistryFromAssemblies(typeof(AccountEventMessageMapper).Assembly);
 

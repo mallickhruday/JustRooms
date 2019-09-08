@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Paramore.Brighter.Extensions.DependencyInjection</id>
+    <version>2.0.0</version>
+    <authors>Daniel Stockhammer, Toby Henderson</authors>
+    <owners>Daniel Stockhammer, Toby Henderson</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <projectUrl>https://github.com/BrighterCommand/Paramore.Brighter.Extensions</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/BrighterCommand/Brighter/master/images/brightercanon-nuget.png</iconUrl>
+    <description>Brighter Microsoft.Extensions.DependencyInjection support</description>
+    <repository type="git" url="https://github.com/BrighterCommand/Paramore.Brighter.Extensions.git" commit="3479ffa2acc6901c65526dafa6e851bc4cbedc89" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="2.2.0" exclude="Build,Analyzers" />
+        <dependency id="Paramore.Brighter" version="9.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
