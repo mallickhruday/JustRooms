@@ -23,7 +23,7 @@ namespace Tests.DirectBooking.adapters.data
                 BookingId = Guid.NewGuid().ToString(),
                 DateOfFirstNight = new DateTime(2019, 07, 11),
                 Price = new Money(226, "USD"),
-                Type = RoomType.MasterSuite, 
+                RoomType = RoomType.MasterSuite, 
                 NumberOfGuests = 3,
                 NumberOfNights = 3,
                 AccountId = Guid.NewGuid().ToString(),
@@ -48,7 +48,7 @@ namespace Tests.DirectBooking.adapters.data
             Assert.That(savedBooking.BookingId, Is.EqualTo(booking.BookingId));
             Assert.That(savedBooking.DateOfFirstNight, Is.EqualTo(booking.DateOfFirstNight));
             Assert.That(savedBooking.Price, Is.EqualTo(booking.Price));
-            Assert.That(savedBooking.Type, Is.EqualTo(booking.Type));
+            Assert.That(savedBooking.RoomType, Is.EqualTo(booking.RoomType));
             Assert.That(savedBooking.NumberOfGuests, Is.EqualTo(booking.NumberOfGuests));
             Assert.That(savedBooking.NumberOfNights, Is.EqualTo(booking.NumberOfNights));
             Assert.That(savedBooking.AccountId, Is.EqualTo(booking.AccountId));

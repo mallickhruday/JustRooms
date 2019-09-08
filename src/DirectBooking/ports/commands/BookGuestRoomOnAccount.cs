@@ -44,9 +44,26 @@ namespace DirectBooking.ports.commands
         /// </summary>
         public string AccountId { get; set; }
 
-        public BookGuestRoomOnAccount() : 
+        public BookGuestRoomOnAccount() : base(Guid.NewGuid()) {}
+
+        public BookGuestRoomOnAccount(
+            string bookingId,
+            DateTime dateOfFirstNight,
+            RoomType type,
+            Money price,
+            int numberOfNights,
+            int numberOfGuests,
+            string accountId
+            ) : 
             base(Guid.NewGuid())
         {
+            BookingId = bookingId;
+            DateOfFirstNight = dateOfFirstNight;
+            Type = type;
+            Price = price;
+            NumberOfNights = numberOfNights;
+            NumberOfGuests = numberOfGuests;
+            AccountId = accountId;
         }
     }
 }

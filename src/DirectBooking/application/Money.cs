@@ -4,7 +4,7 @@ namespace DirectBooking.application
 {
     public class Money : IEquatable<Money>
     {
-       public Money(int Amount, string Currency)
+       public Money(double amount, string currency)
         {
             this.Amount = Amount;
             this.Currency = Currency;

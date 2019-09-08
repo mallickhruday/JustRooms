@@ -42,13 +42,11 @@ namespace DirectBooking.application
         /// </summary>
         public int NumberOfGuests { get; set; }
 
-        public RoomType RoomType { get; }
-
         /// <summary>
         /// The type of room the booking is for
         /// </summary>
-        public RoomType Type { get; set; }
-        
+        public RoomType RoomType { get; set; }
+
         /// <summary>
         /// The price per night of the booking
         /// </summary>

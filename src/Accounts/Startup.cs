@@ -56,8 +56,8 @@ namespace Accounts
                 services.AddAWSService<IAmazonDynamoDB>();
             }
             
-            services.AddScoped<DynamoDbTableBuilder>();
-            services.AddScoped<IUnitOfWork, DynamoDbUnitOfWork>();
+            services.AddSingleton<DynamoDbTableBuilder>();
+            services.AddSingleton<IUnitOfWork, DynamoDbUnitOfWork>();
             
             var retryPolicy = Policy.Handle<Exception>().WaitAndRetry(new[] { TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(150) });
             var circuitBreakerPolicy = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromMilliseconds(500));
@@ -77,7 +77,6 @@ namespace Accounts
             services.AddBrighter(options =>
                 {
                     options.PolicyRegistry = policyRegistry;
-                    options.CommandProcessorLifetime = ServiceLifetime.Scoped;
                 })
                 .AsyncHandlersFromAssemblies(typeof(AddNewAccountHandlerAsync).Assembly);
 
@@ -89,8 +88,8 @@ namespace Accounts
                 config.PostProcess = document =>
                 {
                     document.Info.Version = "v1";
-                    document.Info.Title = "Accounts API";
-                    document.Info.Description = "Hotel customers who have accounts with us";
+                    document.Info.Title = "Booking API";
+                    document.Info.Description = "book rooms in our hotel";
                     document.Info.TermsOfService = "None";
                     document.Info.Contact = new NSwag.OpenApiContact
                     {
