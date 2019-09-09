@@ -6,8 +6,8 @@ namespace DirectBooking.application
     {
        public Money(double amount, string currency)
         {
-            this.Amount = Amount;
-            this.Currency = Currency;
+            this.Amount = amount;
+            this.Currency = currency;
         }
         public double Amount { get; set; }
         public string Currency { get; set; }

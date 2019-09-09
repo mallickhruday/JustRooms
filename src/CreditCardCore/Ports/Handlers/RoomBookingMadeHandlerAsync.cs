@@ -1,4 +1,5 @@
 using System;
+using CreditCardCore.Application;
 using CreditCardCore.Ports.Events;
 using CreditCardCore.Ports.Repositories;
 using Microsoft.Extensions.Logging;
@@ -11,24 +12,35 @@ namespace CreditCardCore.Ports.Handlers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<RoomBookingMadeHandlerAsync> _logger;
 
-        public RoomBookingMadeHandlerAsync(IUnitOfWork unitOfWork, ILogger<RoomBookingMadeHandlerAsync> _logger)
+        public RoomBookingMadeHandlerAsync(IUnitOfWork unitOfWork, ILogger<RoomBookingMadeHandlerAsync> logger)
         {
             _unitOfWork = unitOfWork;
-            this._logger = _logger;
+            this._logger = logger;
         }
         public override GuestRoomBookingMade Handle(GuestRoomBookingMade @event)
         {
             var repo = new AccountCardDetailsRepositoryAsync(_unitOfWork);
 
             var cardDetails = repo.GetAsync(Guid.Parse(@event.AccountId)).GetAwaiter().GetResult();
+
+            if (cardDetails == null)
+            {
+                _logger.LogError("Unable to find card details for account: {0}", @event.AccountId);
+                throw new InvalidOperationException($"Unable to find card details for account {cardDetails.AccountId}");
+            }
             
-            //TODO: We are just logging here, over calling a payment provider, which is what you would really want to do
-            _logger.Log(LogLevel.Information, 
-                "Payment request for account with CC {0} and CVC {1}", 
-                cardDetails.CardNumber, 
-                cardDetails.CardSecurityCode);
-            
+            TakePayment(cardDetails);
+
             return base.Handle(@event);
         }
-   }
+
+        private void TakePayment(AccountCardDetails cardDetails)
+        {
+            //TODO: We are just logging here, over calling a payment provider, which is what you would really want to do
+            _logger.Log(LogLevel.Information,
+                "Payment request for account with CC {0} and CVC {1}",
+                cardDetails.CardNumber,
+                cardDetails.CardSecurityCode);
+        }
+    }
 }

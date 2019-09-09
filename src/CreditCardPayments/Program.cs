@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using Amazon.Runtime;
+using CreditCardCore.Adapters.Data;
 using CreditCardCore.Application;
 using CreditCardCore.Ports.Events;
+using CreditCardCore.Ports.Repositories;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -76,7 +81,13 @@ namespace JustRooms.DirectBookingEventConsumer
         private static IHost BuildHost()
         {
             var host = new HostBuilder()
-                .ConfigureServices((hostContext, services) =>
+                 .ConfigureLogging(loggingBuilder => loggingBuilder.AddConsole())
+                 .ConfigureHostConfiguration((configurationBuilder) =>
+                 {
+                     configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
+                     configurationBuilder.AddEnvironmentVariables(prefix: "CCP_");
+                 })
+                 .ConfigureServices((hostContext, services) =>
 
                 {
                     var connections = new Connection[]
@@ -93,7 +104,7 @@ namespace JustRooms.DirectBookingEventConsumer
                     var rmqConnection = new RmqMessagingGatewayConnection
                     {
                         AmpqUri = new AmqpUriSpecification(new Uri("amqp://guest:guest@localhost:5672")),
-                        Exchange = new Exchange("paramore.brighter.exchange")
+                        Exchange = new Exchange("hotel.booking.exchange")
                     };
 
                     var rmqMessageConsumerFactory = new RmqMessageConsumerFactory(rmqConnection);
@@ -106,13 +117,45 @@ namespace JustRooms.DirectBookingEventConsumer
                             new RmqMessageProducer(rmqConnection));
                     }).AutoFromAssemblies();
 
-                    services.AddSingleton<ILoggerFactory>(x => new SerilogLoggerFactory());
                     services.AddHostedService<ServiceActivatorHostedService>();
+                    var useLocalAwsServices = hostContext.Configuration.GetValue<bool>("AWS:UseLocalServices");
+
+                    if (useLocalAwsServices )
+                    { 
+                        services.AddSingleton<IAmazonDynamoDB>(sp => CreateClient(hostContext.Configuration));
+                    }
+                    else
+                    { 
+                        services.AddAWSService<IAmazonDynamoDB>();
+                    }
+                    
+                    services.AddSingleton<DynamoDbTableBuilder>();
+                    services.AddSingleton<IUnitOfWork, DynamoDbUnitOfWork>();
+         
                 })
+                .UseSerilog()
                 .UseConsoleLifetime()
                 .Build();
 
             return host;
         }
+        
+            private static IAmazonDynamoDB CreateClient(IConfiguration configuration)
+            {
+                var credentials = GetAwsCredentials(configuration);
+                var serviceUrl = configuration.GetValue<string>("DynamoDb:LocalServiceUrl");
+                var clientConfig = new AmazonDynamoDBConfig { ServiceURL = serviceUrl };
+                return new AmazonDynamoDBClient(credentials, clientConfig);
+            }
+    
+           private static BasicAWSCredentials GetAwsCredentials(IConfiguration configuration)
+            {
+                var accessKey = configuration.GetValue<string>("AWS_ACCESS_KEY_ID");
+                var accessSecret = configuration.GetValue<string>("AWS_SECRET_ACCESS_KEY");
+                var credentials = new BasicAWSCredentials(accessKey, accessSecret);
+                return credentials;
+            }
+     
     }
+    
 }

@@ -78,7 +78,7 @@ namespace DirectBooking
             var gatewayConnection = new RmqMessagingGatewayConnection
             {
                 AmpqUri = new AmqpUriSpecification(new Uri("amqp://guest:guest@localhost:5672")),
-                Exchange = new Exchange("paramore.brighter.exchange"),
+                Exchange = new Exchange("hotel.booking.exchange"),
             };
             var producer = new RmqMessageProducer(gatewayConnection);
 
