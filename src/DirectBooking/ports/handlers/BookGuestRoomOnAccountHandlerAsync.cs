@@ -33,7 +33,7 @@ namespace DirectBooking.ports.handlers
             
             await repository.AddAsync(roomBooking, cancellationToken);
 
-            await _messagePublisher.PostAsync(new GuestRoomBookingMade
+            _messagePublisher.Post(new GuestRoomBookingMade
             {
                 BookingId = roomBooking.BookingId,
                 DateOfFirstNight = roomBooking.DateOfFirstNight,
@@ -42,7 +42,7 @@ namespace DirectBooking.ports.handlers
                 Type = roomBooking.RoomType,
                 Price = roomBooking.Price,
                 AccountId = roomBooking.AccountId,
-            }, false, cancellationToken);
+            });
             
             return await base.HandleAsync(command, cancellationToken);
         }

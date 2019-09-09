@@ -3,6 +3,7 @@ using Amazon.DynamoDBv2;
 using Amazon.Runtime;
 using DirectBooking.adapters.data;
 using DirectBooking.ports.handlers;
+using DirectBooking.ports.mappers;
 using DirectBooking.ports.repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Paramore.Brighter;
 using Paramore.Brighter.DynamoDb.Extensions;
 using Paramore.Brighter.Extensions.DependencyInjection;
+using Paramore.Brighter.MessagingGateway.RMQ;
 using Paramore.Darker.AspNetCore;
 using Polly;
 using Polly.Registry;
@@ -72,11 +74,21 @@ namespace DirectBooking
             
             //TODO: Make the DynamoDb policy more realistic
             
+            var messageStore = new InMemoryOutbox();
+            var gatewayConnection = new RmqMessagingGatewayConnection
+            {
+                AmpqUri = new AmqpUriSpecification(new Uri("amqp://guest:guest@localhost:5672")),
+                Exchange = new Exchange("paramore.brighter.exchange"),
+            };
+            var producer = new RmqMessageProducer(gatewayConnection);
+
             services.AddBrighter(options =>
                 {
                     options.PolicyRegistry = policyRegistry;
+                    options.BrighterMessaging = new BrighterMessaging(messageStore, producer);
                 })
-                .AsyncHandlersFromAssemblies(typeof(BookGuestRoomOnAccountHandlerAsync).Assembly);
+                .AsyncHandlersFromAssemblies(typeof(BookGuestRoomOnAccountHandlerAsync).Assembly)
+                .MapperRegistryFromAssemblies(typeof(GuestRoomBookingMadeMapper).Assembly);
 
             services.AddDarker()
                 .AddHandlersFromAssemblies(typeof(GetBookingByIdHandlerAsync).Assembly);

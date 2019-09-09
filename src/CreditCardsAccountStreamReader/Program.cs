@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Runtime;
-using CreditCardsAccountStreamReader.Adapters.Data;
-using CreditCardsAccountStreamReader.Application;
-using CreditCardsAccountStreamReader.Ports.Events;
-using CreditCardsAccountStreamReader.Ports.Handlers;
-using CreditCardsAccountStreamReader.Ports.Mappers;
-using CreditCardsAccountStreamReader.Ports.Repositories;
+using CreditCardCore.Adapters.Data;
+using CreditCardCore.Application;
+using CreditCardCore.Ports.Events;
+using CreditCardCore.Ports.Handlers;
+using CreditCardCore.Ports.Mappers;
+using CreditCardCore.Ports.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -46,7 +46,7 @@ namespace CreditCardsAccountStreamReader
             {
                 var dbBuilder = scope.ServiceProvider.GetService<DynamoDbTableBuilder>();
                 var hasTables = await dbBuilder.HasTables(new string[] {"CardDetails"});
-                if (!hasTables.Item1)
+                if (!hasTables.exist)
                 {
                     await dbBuilder.Build(
                          new DynamoDbTableFactory()

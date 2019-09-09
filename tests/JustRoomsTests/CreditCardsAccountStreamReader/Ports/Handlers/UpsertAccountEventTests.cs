@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CreditCardsAccountStreamReader.Adapters.Data;
-using CreditCardsAccountStreamReader.Application;
-using CreditCardsAccountStreamReader.Ports.Events;
-using CreditCardsAccountStreamReader.Ports.Handlers;
+using CreditCardCore.Adapters.Data;
+using CreditCardCore.Application;
+using CreditCardCore.Ports.Events;
+using CreditCardCore.Ports.Handlers;
 using NUnit.Framework;
 
 namespace JustRoomsTests.CreditCardsAccountStreamReader.Ports.Handlers

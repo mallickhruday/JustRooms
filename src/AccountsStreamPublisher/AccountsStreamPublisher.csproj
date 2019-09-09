@@ -17,7 +17,7 @@
       <PackageReference Include="Paramore.Brighter.MessagingGateway.Kafka" Version="9.0.0" />
       <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection" Version="3.0.0" />
       <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.Hosting" Version="3.0.0" />
-      <PackageReference Include="Serilog" Version="2.9.0-dev-01119" />
+      <PackageReference Include="Serilog" Version="2.9.0-dev-01124" />
       <PackageReference Include="Serilog.Extensions.Hosting" Version="3.0.0-dev-00019" />
       <PackageReference Include="Serilog.Sinks.Console" Version="3.1.2-dev-00823" />
     </ItemGroup>
