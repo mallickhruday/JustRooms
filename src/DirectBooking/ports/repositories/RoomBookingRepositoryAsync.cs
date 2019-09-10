@@ -29,26 +29,7 @@ namespace DirectBooking.ports.repositories
         /// <param name="ct">Operation cancellation</param>
         public async Task AddAsync(RoomBooking roomBooking, CancellationToken ct = default(CancellationToken))
         {
-            
-            //set incoming record to V1
-            roomBooking.CurrentVersion = 1; 
-            roomBooking.Version = RoomBooking.VersionPrefix + $"{roomBooking.CurrentVersion}";
-            
-            //copy the new roomBooking record into version 0
-            var snapshot = new RoomBooking(
-                roomBooking.BookingId,
-                roomBooking.DateOfFirstNight,
-                roomBooking.NumberOfNights,
-                roomBooking.NumberOfGuests,
-                roomBooking.RoomType,
-                roomBooking.Price,
-                roomBooking.AccountId);
-            snapshot.CurrentVersion = roomBooking.CurrentVersion;
-            snapshot.Version = RoomBooking.SnapShot;
-            
-            //save snapshot and history
-            await _unitOfWork.SaveAsync(snapshot, ct);
-            await _unitOfWork.SaveAsync(roomBooking, ct);
+           await _unitOfWork.SaveAsync(roomBooking, ct);
         }
 
          /// <summary>
@@ -58,7 +39,7 @@ namespace DirectBooking.ports.repositories
         /// <param name="ct">Operation cancellation</param>
         public async Task DeleteAsync(Guid bookingId, CancellationToken ct = default(CancellationToken))
         {
-            await _unitOfWork.DeleteAsync(bookingId, RoomBooking.SnapShot, ct);
+            await _unitOfWork.DeleteAsync(bookingId, ct);
         }
         
         /// <summary>
@@ -69,19 +50,18 @@ namespace DirectBooking.ports.repositories
         /// <returns>The roomBooking matching the Id, or null</returns>
         public async Task<RoomBooking> GetAsync(Guid bookingId, CancellationToken ct = default(CancellationToken))
         {
-            return await _unitOfWork.GetAsync(bookingId, RoomBooking.SnapShot, ct);
+            return await _unitOfWork.GetAsync(bookingId, ct);
         }
 
         /// <summary>
         /// Get a specific version of an roomBooking
         /// </summary>
         /// <param name="bookingId">The roomBooking to get</param>
-        /// <param name="version">The version of the roomBooking expressed as "VN" where V0 is the snapshot </param>
         /// <param name="ct"></param>
         /// <returns>The matching version of the roomBooking</returns>
          public async Task<RoomBooking> GetAsync(Guid bookingId, string version, CancellationToken ct = default(CancellationToken))
         {
-            return await _unitOfWork.GetAsync(bookingId, version, ct);
+            return await _unitOfWork.GetAsync(bookingId, ct);
         }
 
         /// <summary>
@@ -117,27 +97,7 @@ namespace DirectBooking.ports.repositories
         public async Task UpdateAsync(RoomBooking newBookingVersion, AggregateLock aggregateLock, CancellationToken ct = default(CancellationToken))
         {
             //find the next version to use
-            var snapshot = await _unitOfWork.GetAsync(Guid.Parse(newBookingVersion.AccountId), ct: ct);
-            var nextVersion = snapshot.CurrentVersion + 1;
-            newBookingVersion.CurrentVersion = nextVersion;
-            newBookingVersion.Version = RoomBooking.VersionPrefix + $"{nextVersion}";
-
-            //create a new snapshot from the current record
-            var newSnapshot = new RoomBooking(
-                newBookingVersion.BookingId,
-                 newBookingVersion.DateOfFirstNight,
-                newBookingVersion.NumberOfNights,
-                newBookingVersion.NumberOfGuests,
-                newBookingVersion.RoomType,
-                newBookingVersion.Price,
-                newBookingVersion.AccountId);
-            newSnapshot.CurrentVersion = nextVersion;
-            newSnapshot.Version = RoomBooking.SnapShot;
-
-            //save the snapshot and the new version
-            await _unitOfWork.SaveAsync(newSnapshot, ct);
-            await _unitOfWork.SaveAsync(newBookingVersion, ct);
- 
+           await _unitOfWork.SaveAsync(newBookingVersion, ct);
         }
 
 

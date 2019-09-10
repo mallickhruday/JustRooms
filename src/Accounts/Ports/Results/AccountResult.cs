@@ -17,7 +17,7 @@ namespace Accounts.Ports.Results
         /// <param name="account">The account to construct the result from</param>
         public AccountResult(Account account)
         {
-            Id = Guid.Parse(account.AccountId);
+            Id = account.AccountId;
             Name = account.Name;
             Addresses = account.Addresses;
             ContactDetails = account.ContactDetails;

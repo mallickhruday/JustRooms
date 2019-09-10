@@ -1,26 +1,32 @@
 using System.Threading;
 using System.Threading.Tasks;
-using DirectBooking.application;
+using DirectBooking.adapters.data;
 using DirectBooking.ports.queries;
 using DirectBooking.ports.repositories;
 using JustRoomsTests.DirectBooking.ports.results;
+using Microsoft.EntityFrameworkCore;
 using Paramore.Darker;
 
 namespace DirectBooking.ports.handlers
 {
     public class GetBookingByIdHandlerAsync : QueryHandlerAsync<GetBookingById, BookingResult>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly DbContextOptions<BookingContext> _options;
 
-        public GetBookingByIdHandlerAsync(IUnitOfWork unitOfWork)
+        public GetBookingByIdHandlerAsync(DbContextOptions<BookingContext> options)
         {
-            _unitOfWork = unitOfWork;
+            _options = options;
         }
         public override async Task<BookingResult> ExecuteAsync(GetBookingById query, CancellationToken cancellationToken = new CancellationToken())
         {
-            var booking = await _unitOfWork.GetAsync(query.BookingId, RoomBooking.SnapShot, cancellationToken);
-            
-            return new BookingResult(booking);
+            using (var uow = new BookingContext(_options))
+            {
+                var repository = new RoomBookingRepositoryAsync(new EFUnitOfWork(uow));
+                
+                var booking = await repository.GetAsync(query.BookingId, cancellationToken);
+
+                return new BookingResult(booking);
+            }
         }
     }
 }

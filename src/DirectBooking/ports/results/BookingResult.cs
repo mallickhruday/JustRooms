@@ -42,7 +42,7 @@ namespace JustRoomsTests.DirectBooking.ports.results
         
         public BookingResult(RoomBooking roomBooking)
         {
-            BookingId = roomBooking.BookingId;
+            BookingId = roomBooking.RoomBookingId.ToString();
             DateOfFirstNight = roomBooking.DateOfFirstNight;
             NumberOfGuests = roomBooking.NumberOfGuests;
             NumberOfNights = roomBooking.NumberOfNights;

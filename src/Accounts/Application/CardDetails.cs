@@ -1,10 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace Accounts.Application
 {
     /// <summary>
     /// The guest's card details
     /// </summary>
+    [Owned]
     public class CardDetails
     {
+        public CardDetails() {}
+        
         /// <summary>
         /// Construct new card detail;s
         /// </summary>
@@ -19,11 +24,11 @@ namespace Accounts.Application
         /// <summary>
         /// The 16-digit card number
         /// </summary>
-        public string CardNumber { get; }
+        public string CardNumber { get; set; }
         
         /// <summary>
         /// The CVC code of the card
         /// </summary>
-        public string CardSecurityCode { get; }
+        public string CardSecurityCode { get; set; }
     }
 }

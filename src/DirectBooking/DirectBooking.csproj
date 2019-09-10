@@ -7,13 +7,11 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="8.1.1" />
-        <PackageReference Include="AWSSDK.Core" Version="3.3.103.35" />
-        <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.101.62" />
-        <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.100.1" />
-        <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.3.101.52" />
         <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.6" />
         <PackageReference Include="NSwag.Annotations" Version="13.0.6" />
         <PackageReference Include="NSwag.AspNetCore" Version="13.0.6" />
         <PackageReference Include="NSwag.Core" Version="13.0.6" />
@@ -23,8 +21,10 @@
         <PackageReference Include="Paramore.Brighter.DynamoDb.Extensions" Version="9.1.0" />
         <PackageReference Include="Paramore.Brighter.Extensions.DependencyInjection" Version="3.0.0" />
         <PackageReference Include="Paramore.Brighter.MessagingGateway.RMQ" Version="9.0.0" />
+        <PackageReference Include="Paramore.Brighter.Outbox.MySql" Version="9.0.0" />
         <PackageReference Include="Paramore.Darker" Version="2.0.63" />
         <PackageReference Include="Paramore.Darker.AspNetCore" Version="2.0.63" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.1-preview1-final" />
         <PackageReference Include="Serilog" Version="2.9.0-dev-01124" />
         <PackageReference Include="Serilog.AspNetCore" Version="3.0.1-dev-00099" />
         <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.2-dev-10256" />

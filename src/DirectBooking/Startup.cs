@@ -1,17 +1,14 @@
 ﻿using System;
-using Amazon.DynamoDBv2;
-using Amazon.Runtime;
 using DirectBooking.adapters.data;
 using DirectBooking.ports.handlers;
 using DirectBooking.ports.mappers;
-using DirectBooking.ports.repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Paramore.Brighter;
-using Paramore.Brighter.DynamoDb.Extensions;
 using Paramore.Brighter.Extensions.DependencyInjection;
 using Paramore.Brighter.MessagingGateway.RMQ;
 using Paramore.Darker.AspNetCore;
@@ -45,21 +42,6 @@ namespace DirectBooking
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            var useLocalAwsServices = Configuration.GetValue<bool>("AWS:UseLocalServices");
-            
-            if (useLocalAwsServices)
-            {
-                services.AddSingleton<IAmazonDynamoDB>(sp => CreateClient());
-            }
-            else
-            {
-                services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
-                services.AddAWSService<IAmazonDynamoDB>();
-            }
-            
-            services.AddSingleton<DynamoDbTableBuilder>();
-            services.AddSingleton<IUnitOfWork, DynamoDbUnitOfWork>();
-            
             var retryPolicy = Policy.Handle<Exception>().WaitAndRetry(new[] { TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(150) });
             var circuitBreakerPolicy = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromMilliseconds(500));
             var retryPolicyAsync = Policy.Handle<Exception>().WaitAndRetryAsync(new[] { TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(150) });
@@ -71,8 +53,6 @@ namespace DirectBooking
                 { CommandProcessor.RETRYPOLICYASYNC, retryPolicyAsync },
                 { CommandProcessor.CIRCUITBREAKERASYNC, circuitBreakerPolicyAsync }
             }; 
-            
-            //TODO: Make the DynamoDb policy more realistic
             
             var messageStore = new InMemoryOutbox();
             var gatewayConnection = new RmqMessagingGatewayConnection
@@ -111,6 +91,10 @@ namespace DirectBooking
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
+            services.AddDbContext<BookingContext>(options =>
+                options.UseMySql(Configuration["Database:Bookings"]));
+
         }
 
         /// <summary>
@@ -135,16 +119,5 @@ namespace DirectBooking
             app.UseSwaggerUi3();
             app.UseMvc();
         }
-        
-        private IAmazonDynamoDB CreateClient()
-        {
-            var accessKey = Configuration.GetValue<string>("AWS_ACCESS_KEY_ID");
-            var accessSecret = Configuration.GetValue<string>("AWS_SECRET_ACCESS_KEY");
-            var credentials = new BasicAWSCredentials(accessKey, accessSecret);
-            var serviceUrl = Configuration.GetValue<string>("DynamoDb:LocalServiceUrl");
-            var clientConfig = new AmazonDynamoDBConfig { ServiceURL = serviceUrl };
-            return new AmazonDynamoDBClient(credentials, clientConfig);
-        }
-
-    }
+   }
 }

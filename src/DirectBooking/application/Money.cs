@@ -1,7 +1,9 @@
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace DirectBooking.application
 {
+    [Owned]
     public class Money : IEquatable<Money>
     {
        public Money(double amount, string currency)

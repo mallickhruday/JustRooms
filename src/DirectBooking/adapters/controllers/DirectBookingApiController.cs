@@ -35,7 +35,7 @@ namespace DirectBooking.adapters.controllers
         public async Task<IActionResult> Post([FromBody] RoomBookingDTO roomBookingDto, CancellationToken ct)
         {
             var addBooking = new BookGuestRoomOnAccount(
-                Guid.NewGuid().ToString(),
+                Guid.NewGuid(),
                 roomBookingDto.DateOfFirstNight,
                 Enum.Parse<RoomType>(roomBookingDto.RoomType),
                 new Money(Convert.ToDouble(roomBookingDto.Amount), roomBookingDto.Currency),
@@ -45,7 +45,7 @@ namespace DirectBooking.adapters.controllers
             );
             
             await _commandProcessor.SendAsync(addBooking, false, ct);
-            var booking = await _queryProcessor.ExecuteAsync(new GetBookingById(Guid.Parse(addBooking.BookingId)), ct); 
+            var booking = await _queryProcessor.ExecuteAsync(new GetBookingById(addBooking.BookingId), ct); 
             return Ok(RoomBookingDTO.FromQueryResult(booking));
         }
     }

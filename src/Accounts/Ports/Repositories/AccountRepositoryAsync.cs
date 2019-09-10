@@ -30,18 +30,6 @@ namespace Accounts.Ports.Repositories
         /// <param name="ct">Operation cancellation</param>
         public async Task AddAsync(Account account, CancellationToken ct = default(CancellationToken))
         {
-            
-            //set incoming record to V1
-            account.CurrentVersion = 1; 
-            account.Version = Account.VersionPrefix + $"{account.CurrentVersion}";
-            
-            //copy the new account record into version 0
-            var snapshot = new Account(Guid.Parse(account.AccountId), account.Name, account.Addresses, account.ContactDetails, account.CardDetails);
-            snapshot.CurrentVersion = account.CurrentVersion;
-            snapshot.Version = Account.SnapShot;
-            
-            //save snapshot and history
-            await _unitOfWork.SaveAsync(snapshot, ct);
             await _unitOfWork.SaveAsync(account, ct);
         }
 
@@ -52,7 +40,7 @@ namespace Accounts.Ports.Repositories
         /// <param name="ct">Operation cancellation</param>
         public async Task DeleteAsync(Guid accountId, CancellationToken ct = default(CancellationToken))
         {
-            await _unitOfWork.DeleteAsync(accountId, Account.SnapShot, ct);
+            await _unitOfWork.DeleteAsync(accountId, ct);
         }
         
         /// <summary>
@@ -63,7 +51,7 @@ namespace Accounts.Ports.Repositories
         /// <returns>The account matching the Id, or null</returns>
         public async Task<Account> GetAsync(Guid accountId, CancellationToken ct = default(CancellationToken))
         {
-            return await _unitOfWork.GetAsync(accountId, Account.SnapShot, ct);
+            return await _unitOfWork.GetAsync(accountId, ct);
         }
 
         /// <summary>
@@ -75,7 +63,7 @@ namespace Accounts.Ports.Repositories
         /// <returns>The matching version of the account</returns>
          public async Task<Account> GetAsync(Guid accountId, string version, CancellationToken ct = default(CancellationToken))
         {
-            return await _unitOfWork.GetAsync(accountId, version, ct);
+            return await _unitOfWork.GetAsync(accountId, ct);
         }
 
         /// <summary>
@@ -110,23 +98,8 @@ namespace Accounts.Ports.Repositories
         /// <param name="ct">A token for operation cancellation</param>
         public async Task UpdateAsync(Account newAccountVersion, AggregateLock aggregateLock, CancellationToken ct = default(CancellationToken))
         {
-            //find the next version to use
-            var snapshot = await _unitOfWork.GetAsync(Guid.Parse(newAccountVersion.AccountId), ct: ct);
-            var nextVersion = snapshot.CurrentVersion + 1;
-            newAccountVersion.CurrentVersion = nextVersion;
-            newAccountVersion.Version = Account.VersionPrefix + $"{nextVersion}";
-
-            //create a new snapshot from the current record
-            var newSnapshot = new Account(Guid.Parse(newAccountVersion.AccountId), newAccountVersion.Name, newAccountVersion.Addresses, newAccountVersion.ContactDetails, newAccountVersion.CardDetails);
-            newSnapshot.CurrentVersion = nextVersion;
-            newSnapshot.Version = Account.SnapShot;
-
-            //save the snapshot and the new version
-            await _unitOfWork.SaveAsync(newSnapshot, ct);
             await _unitOfWork.SaveAsync(newAccountVersion, ct);
  
         }
-
-
     }
 }

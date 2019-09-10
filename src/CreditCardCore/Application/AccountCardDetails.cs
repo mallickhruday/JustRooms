@@ -1,40 +1,34 @@
+using System;
+using System.ComponentModel.DataAnnotations;
 using Amazon.DynamoDBv2.DataModel;
 
 namespace CreditCardCore.Application
 {
-    [DynamoDBTable("CardDetails")]
     public class AccountCardDetails
     {
-        public const string SnapShot = "V0";
-        public const string VersionPrefix = "V";
+        public Guid AccountId { get; set; }
         
-        [DynamoDBHashKey]
-        [DynamoDBProperty]
-        public string AccountId { get; set; }
-        [DynamoDBProperty]
         public string CardNumber { get; set; }
-        [DynamoDBProperty]
+        
         public string CardSecurityCode { get; set; }
-        [DynamoDBProperty]
+        
         public string FirstLineOfAddress { get; set; }
-        [DynamoDBProperty]
+        
         public string Name { get; set; }
-        [DynamoDBProperty]
+        
         public string ZipCode { get; set; }
-        [DynamoDBProperty]
-        public int CurrentVersion { get; set; }
-        [DynamoDBProperty]
-        [DynamoDBRangeKey]
-        public string Version { get; set; }
-        [DynamoDBProperty]
+        
+        [Timestamp]
+        public byte[] Version { get; set; }
+        
         public string LockedBy { get; set; }
-        [DynamoDBProperty]
+        
         public string LockExpiresAt { get; set; }
 
 
         public AccountCardDetails() {}
 
-        public AccountCardDetails(string accountId, string name, string cardNumber, string cardSecurityCode,
+        public AccountCardDetails(Guid accountId, string name, string cardNumber, string cardSecurityCode,
             string firstLineOfAddress, string zipCode)
         {
             AccountId = accountId;

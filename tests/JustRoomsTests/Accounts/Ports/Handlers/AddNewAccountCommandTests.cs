@@ -6,6 +6,7 @@ using Accounts.Adapters.Data;
 using Accounts.Application;
 using Accounts.Ports.Commands;
 using Accounts.Ports.Handlers;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
 namespace JustRoomsTests.Accounts.Ports.Handlers
@@ -13,19 +14,22 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
     [TestFixture]
     public class AddNewAccountCommandTests
     {
-        private InMemoryUnitOfWork _unitOfWork;
+        private DbContextOptions<AccountContext> _options;
 
         [SetUp]
         public void Initialize()
         {
-            _unitOfWork = new InMemoryUnitOfWork();
-        }
+            _options = new DbContextOptionsBuilder<AccountContext>()
+                .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
+                .Options;
+       }
 
         [Test]
         public async Task When_adding_an_account()
         {
             //arrange
-            var handler = new AddNewAccountHandlerAsync(_unitOfWork);
+            var commandProcessor = new FakeCommandProcessor();
+            var handler = new AddNewAccountHandlerAsync(_options, commandProcessor);
             var command = new AddNewAccountCommand()
             {
                 Id = Guid.NewGuid(),
@@ -41,7 +45,7 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
             //act
             await handler.HandleAsync(command);
 
-            var savedAccount = await _unitOfWork.GetAsync(command.Id);
+            var savedAccount = await new EFUnitOfWork(new AccountContext(_options)).GetAsync(command.Id);
 
             //assert
             Assert.That(savedAccount.AccountId, Is.EqualTo(command.Id.ToString()));
@@ -54,8 +58,9 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
             Assert.That(savedAddress.FistLineOfAddress, Is.EqualTo(expectedAddress.FistLineOfAddress));
             Assert.That(savedAddress.State, Is.EqualTo(expectedAddress.State));
             Assert.That(savedAddress.ZipCode, Is.EqualTo(expectedAddress.ZipCode));
-            Assert.That(savedAccount.Version, Is.EqualTo("V0"));
-            Assert.That(savedAccount.CurrentVersion, Is.EqualTo(1));
+            
+            Assert.IsTrue(commandProcessor.RaiseAccountEvent);
+            Assert.IsTrue(commandProcessor.AllSent);
          }
     }
 }

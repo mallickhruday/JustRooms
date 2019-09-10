@@ -44,23 +44,6 @@ namespace CreditCardsAccountStreamReader
 
             using (var scope = host.Services.CreateScope())
             {
-                var dbBuilder = scope.ServiceProvider.GetService<DynamoDbTableBuilder>();
-                var hasTables = await dbBuilder.HasTables(new string[] {"CardDetails"});
-                if (!hasTables.exist)
-                {
-                    await dbBuilder.Build(
-                         new DynamoDbTableFactory()
-                             .GenerateCreateTableMapper<AccountCardDetails>(
-                                 new DynamoDbCreateProvisionedThroughput(
-                                     new ProvisionedThroughput(readCapacityUnits: 10, writeCapacityUnits: 10),
-                                     new Dictionary<string, ProvisionedThroughput>()
-                                 ),
-                                 billingMode: BillingMode.PAY_PER_REQUEST,
-                                 sseSpecification: new SSESpecification {Enabled = true}
-                                 )
-                     );
-                     await dbBuilder.EnsureTablesReady(new string[] {"CardDetails"}, TableStatus.ACTIVE);
-                }
             }
         
             try
@@ -90,19 +73,6 @@ namespace CreditCardsAccountStreamReader
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    var useLocalAwsServices = hostContext.Configuration.GetValue<bool>("AWS:UseLocalServices");
-
-                    if (useLocalAwsServices )
-                    { 
-                        services.AddSingleton<IAmazonDynamoDB>(sp => CreateClient(hostContext.Configuration));
-                        services.AddSingleton<IAmazonDynamoDBStreams>(sp => CreateStreamClient(hostContext.Configuration));
-                    }
-                    else
-                    { 
-                        services.AddAWSService<IAmazonDynamoDB>();
-                        services.AddAWSService<IAmazonDynamoDBStreams>();
-                    }
- 
                     var connections = new Connection[]
                     {
                         new Connection<UpsertAccountEvent>(
@@ -122,8 +92,6 @@ namespace CreditCardsAccountStreamReader
 
                     var messageConsumerFactory = new KafkaMessageConsumerFactory(gatewayConfiguration);
 
-                  services.AddScoped<DynamoDbTableBuilder>();
-                  services.AddScoped<IUnitOfWork, DynamoDbUnitOfWork>();
                   services.AddServiceActivator(options =>
                     {
                         options.Connections = connections;
@@ -139,29 +107,5 @@ namespace CreditCardsAccountStreamReader
                 .UseConsoleLifetime()
                 .Build();
         }
-        
-        private static IAmazonDynamoDB CreateClient(IConfiguration configuration)
-        {
-            var credentials = GetAwsCredentials(configuration);
-            var serviceUrl = configuration.GetValue<string>("DynamoDb:LocalServiceUrl");
-            var clientConfig = new AmazonDynamoDBConfig { ServiceURL = serviceUrl };
-            return new AmazonDynamoDBClient(credentials, clientConfig);
-        }
-
-        private static IAmazonDynamoDBStreams CreateStreamClient(IConfiguration configuration)
-        {
-            var credentials = GetAwsCredentials(configuration);
-            var serviceUrl = configuration.GetValue<string>("DynamoDb:LocalServiceUrl");
-            var clientConfig = new AmazonDynamoDBStreamsConfig { ServiceURL = serviceUrl };
-            return new AmazonDynamoDBStreamsClient(credentials, clientConfig);
-        }
-        
-        private static BasicAWSCredentials GetAwsCredentials(IConfiguration configuration)
-        {
-            var accessKey = configuration.GetValue<string>("AWS_ACCESS_KEY_ID");
-            var accessSecret = configuration.GetValue<string>("AWS_SECRET_ACCESS_KEY");
-            var credentials = new BasicAWSCredentials(accessKey, accessSecret);
-            return credentials;
-        }
-    }
+   }
 }

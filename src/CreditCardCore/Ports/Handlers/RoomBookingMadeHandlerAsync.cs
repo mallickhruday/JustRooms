@@ -1,7 +1,9 @@
 using System;
+using CreditCardCore.Adapters.Data;
 using CreditCardCore.Application;
 using CreditCardCore.Ports.Events;
 using CreditCardCore.Ports.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Paramore.Brighter;
 
@@ -9,24 +11,29 @@ namespace CreditCardCore.Ports.Handlers
 {
     public class RoomBookingMadeHandlerAsync : RequestHandler<GuestRoomBookingMade>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly DbContextOptions<CardDetailsContext> _options;
         private readonly ILogger<RoomBookingMadeHandlerAsync> _logger;
 
-        public RoomBookingMadeHandlerAsync(IUnitOfWork unitOfWork, ILogger<RoomBookingMadeHandlerAsync> logger)
+        public RoomBookingMadeHandlerAsync(DbContextOptions<CardDetailsContext> options, ILogger<RoomBookingMadeHandlerAsync> logger)
         {
-            _unitOfWork = unitOfWork;
+            _options = options;
             this._logger = logger;
         }
         public override GuestRoomBookingMade Handle(GuestRoomBookingMade @event)
         {
-            var repo = new AccountCardDetailsRepositoryAsync(_unitOfWork);
-
-            var cardDetails = repo.GetAsync(Guid.Parse(@event.AccountId)).GetAwaiter().GetResult();
-
-            if (cardDetails == null)
+            AccountCardDetails cardDetails;
+            using (var uow = new CardDetailsContext(_options))
             {
-                _logger.LogError("Unable to find card details for account: {0}", @event.AccountId);
-                throw new InvalidOperationException($"Unable to find card details for account {cardDetails.AccountId}");
+                var repo = new AccountCardDetailsRepositoryAsync(new EFUnitOfWork(uow));
+
+                cardDetails = repo.GetAsync(Guid.Parse(@event.AccountId)).GetAwaiter().GetResult();
+
+                if (cardDetails == null)
+                {
+                    _logger.LogError("Unable to find card details for account: {0}", @event.AccountId);
+                    throw new InvalidOperationException(
+                        $"Unable to find card details for account {cardDetails.AccountId}");
+                }
             }
             
             TakePayment(cardDetails);

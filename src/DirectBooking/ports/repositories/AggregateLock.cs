@@ -38,7 +38,7 @@ namespace DirectBooking.ports.repositories
         /// <returns></returns>
         public async Task ReleaseAsync(CancellationToken ct = default(CancellationToken))
         {
-            var snapshot = await _unitOfWork.GetAsync(Guid.Parse(_bookingId), RoomBooking.SnapShot, ct);
+            var snapshot = await _unitOfWork.GetAsync(Guid.Parse(_bookingId),ct);
             if (snapshot.LockedBy == _lockedBy &&
                 snapshot.LockExpiresAt == _expiresAt.ToString(CultureInfo.InvariantCulture))
             {

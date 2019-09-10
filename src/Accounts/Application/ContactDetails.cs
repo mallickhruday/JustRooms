@@ -1,8 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace Accounts.Application
 {
     /// <summary>
     /// The contact details of the guest
     /// </summary>
+    [Owned]
     public class ContactDetails
     {
         /// <summary>
@@ -24,11 +27,11 @@ namespace Accounts.Application
         /// <summary>
         /// The guest's email
         /// </summary>
-        public string Email { get; }
+        public string Email { get; set; }
         
         /// <summary>
         /// The geust's telephone number
         /// </summary>
-        public string TelephoneNumber {get;}
+        public string TelephoneNumber {get; set; }
     }
 }

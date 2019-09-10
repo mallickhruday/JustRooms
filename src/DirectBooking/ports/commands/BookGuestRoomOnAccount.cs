@@ -12,7 +12,7 @@ namespace DirectBooking.ports.commands
         /// <summary>
         /// The id for  this booking
         /// </summary>
-        public string BookingId { get; set; }
+        public Guid BookingId { get; set; }
         
         /// <summary>
         /// The first night's  stay
@@ -47,7 +47,7 @@ namespace DirectBooking.ports.commands
         public BookGuestRoomOnAccount() : base(Guid.NewGuid()) {}
 
         public BookGuestRoomOnAccount(
-            string bookingId,
+            Guid bookingId,
             DateTime dateOfFirstNight,
             RoomType type,
             Money price,

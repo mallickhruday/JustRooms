@@ -1,8 +1,13 @@
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Accounts.Adapters.Data;
 using Accounts.Application;
 using Accounts.Ports.Commands;
+using Accounts.Ports.Events;
 using Accounts.Ports.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Paramore.Brighter;
 using Paramore.Brighter.Logging.Attributes;
 using Paramore.Brighter.Policies.Attributes;
@@ -14,15 +19,17 @@ namespace Accounts.Ports.Handlers
     /// </summary>
     public class AddNewAccountHandlerAsync : RequestHandlerAsync<AddNewAccountCommand>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly DbContextOptions<AccountContext> _options;
+        private readonly IAmACommandProcessor _commandProcessor;
 
         /// <summary>
         /// Construct an add new Account handler
         /// </summary>
-        /// <param name="unitOfWork">A unit of work, used to talk to the storage layer</param>
-        public AddNewAccountHandlerAsync(IUnitOfWork unitOfWork)
+        /// <param name="options">A unit of work, used to talk to the storage layer</param>
+        public AddNewAccountHandlerAsync(DbContextOptions<AccountContext> options, IAmACommandProcessor commandProcessor)
         {
-            _unitOfWork = unitOfWork;
+            _options = options;
+            _commandProcessor = commandProcessor;
         }
         
         /// <summary>
@@ -35,15 +42,56 @@ namespace Accounts.Ports.Handlers
         [UsePolicyAsync(Policies.Catalog.DynamoDbAccess, step: 0)]
         public override async Task<AddNewAccountCommand> HandleAsync(AddNewAccountCommand command, CancellationToken cancellationToken = new CancellationToken())
         {
-            var accountRepository = new AccountRepositoryAsync(_unitOfWork);
-            await accountRepository.AddAsync(new Account(
-                    command.Id,
-                    command.Name,
-                    command.Addresses,
-                    command.ContactDetails,
-                    command.CardDetails
-                )
-            );
+            Guid eventId;
+            using (var uow = new AccountContext(_options))
+            {
+                using (var trans = uow.Database.BeginTransaction())
+                {
+                    var accountRepository = new AccountRepositoryAsync(new EFUnitOfWork(uow));
+                    
+                    var account = new Account(
+                        command.Id,
+                        command.Name,
+                        command.Addresses,
+                        command.ContactDetails,
+                        command.CardDetails
+                    );
+                    
+                    await accountRepository.AddAsync(account);
+
+                    eventId =_commandProcessor.DepositPost(new AccountEvent
+                    {
+                        Id = Guid.NewGuid(),
+                        AccountId = account.AccountId.ToString(),
+                        Addresses = account.Addresses.Select(
+                            addr => new AddressEvent
+                            {
+                                AddressType = addr.AddressType.ToString(),
+                                FistLineOfAddress = addr.FistLineOfAddress,
+                                State = addr.State,
+                                ZipCode = addr.ZipCode
+                            }).ToList(),
+                        Name = new NameEvent {FirstName = account.Name.FirstName, LastName = account.Name.LastName},
+                        CardDetails = new CardDetailsEvent
+                        {
+                            CardNumber = account.CardDetails.CardNumber,
+                            CardSecurityCode = account.CardDetails.CardSecurityCode
+                        },
+                        ContactDetails = new ContactDetailsEvent
+                        {
+                            Email = account.ContactDetails.Email,
+                            TelephoneNumber = account.ContactDetails.TelephoneNumber
+                        },
+                        Version = account.Version
+                    });
+                    
+                    trans.Commit();
+                }
+            }
+            
+            _commandProcessor.ClearOutbox(eventId);
+            
+
             return await base.HandleAsync(command, cancellationToken);
         }
     }

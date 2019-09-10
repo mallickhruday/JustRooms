@@ -1,8 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace Accounts.Application
 {
     /// <summary>
     /// A guest's name
     /// </summary>
+    [Owned]
     public class Name
     {
         /// <summary>
@@ -24,11 +27,11 @@ namespace Accounts.Application
         /// <summary>
         /// The guest's first name
         /// </summary>
-        public string FirstName { get; }
+        public string FirstName { get; set; }
         
         /// <summary>
         /// The guest's last name
         /// </summary>
-        public string LastName { get; }
+        public string LastName { get; set; }
     }
 }

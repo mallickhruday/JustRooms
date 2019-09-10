@@ -1,8 +1,10 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Accounts.Adapters.Data;
 using Accounts.Ports.Queries;
 using Accounts.Ports.Repositories;
 using Accounts.Ports.Results;
+using Microsoft.EntityFrameworkCore;
 using Paramore.Darker;
 
 namespace Accounts.Ports.Handlers
@@ -12,15 +14,15 @@ namespace Accounts.Ports.Handlers
     /// </summary>
     public class GetAccountByIdHandlerAsync : QueryHandlerAsync<GetAccountById, AccountResult>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly DbContextOptions<AccountContext> _options;
 
         /// <summary>
         /// Construct a handler for queries to retrieve guest accounts by id
         /// </summary>
-        /// <param name="unitOfWork"></param>
-        public GetAccountByIdHandlerAsync(IUnitOfWork unitOfWork)
+        /// <param name="options"></param>
+        public GetAccountByIdHandlerAsync(DbContextOptions<AccountContext> options)
         {
-            _unitOfWork = unitOfWork;
+            _options = options;
         }
         
         /// <summary>
@@ -31,9 +33,15 @@ namespace Accounts.Ports.Handlers
         /// <returns>An AccountResult in response to that query</returns>
         public override async Task<AccountResult> ExecuteAsync(GetAccountById query, CancellationToken cancellationToken = new CancellationToken())
         {
-            var accountRepositoryAsync = new AccountRepositoryAsync(_unitOfWork);
-            var account = await accountRepositoryAsync.GetAsync(query.AccountId, cancellationToken);
-            return new AccountResult(account);
+            using (var uow = new AccountContext(_options))
+            {
+                using (var trans = uow.Database.BeginTransaction())
+                {
+                    var accountRepositoryAsync = new AccountRepositoryAsync(new EFUnitOfWork(uow));
+                    var account = await accountRepositoryAsync.GetAsync(query.AccountId, cancellationToken);
+                    return new AccountResult(account);
+                }
+            }
         }
     }
 }

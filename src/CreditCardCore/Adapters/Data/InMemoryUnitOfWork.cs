@@ -9,92 +9,59 @@ namespace CreditCardCore.Adapters.Data
 {
     public class InMemoryUnitOfWork : IUnitOfWork
     {
-        private Dictionary<Item, AccountCardDetails> _cardDetails = new Dictionary<Item, AccountCardDetails>();
-        
-        public Task DeleteAsync(Guid accountId, string version = AccountCardDetails.SnapShot, CancellationToken ct = default(CancellationToken))
+        private Dictionary<Guid, AccountCardDetails> _bookings = new Dictionary<Guid, AccountCardDetails>();
+
+        /// <summary>
+        /// Remove a guest booking version, by default the snapshot which deletes the 'live' booking but preserves history
+        /// </summary>
+        /// <param name="bookingId">The booking to mark as deleted</param>
+        /// <param name="version">The version of the guest booking to remove, defaults to the current snapshot which deletes the booking</param>
+        /// <param name="ct">Token to allow cancelling the ongoing operation</param>
+        public Task DeleteAsync(Guid bookingId, CancellationToken ct = default(CancellationToken))
         {
             var tcs = new TaskCompletionSource<object>();
-            var item = new Item(accountId, version);
-            if (_cardDetails.ContainsKey(item))
+            if (_bookings.ContainsKey(bookingId))
             {
-                _cardDetails.Remove(item);
+                _bookings.Remove(bookingId);
             }
-            
+
             tcs.SetResult(new object());
             return tcs.Task;
         }
 
-        public Task<AccountCardDetails> GetAsync(Guid accountId, string version = AccountCardDetails.SnapShot, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Get an booking by id (and version number)
+        /// </summary>
+        /// <param name="bookingId">The id of the booking to retrieve</param>
+        /// <param name="version">The version to retrieve, by default it is the snapshot i.e. current live record</param>
+        /// <param name="ct">Token to allow cancelling the ongoing operation</param>
+        public Task<AccountCardDetails> GetAsync(Guid bookingId, CancellationToken ct = default(CancellationToken))
         {
             var tcs = new TaskCompletionSource<AccountCardDetails>();
-            _cardDetails.TryGetValue(new Item(accountId, version), out AccountCardDetails value);
+            _bookings.TryGetValue(bookingId, out AccountCardDetails value);
             tcs.SetResult(value);
-            return tcs.Task;
-         }
-
-       
-        public Task SaveAsync(AccountCardDetails account, CancellationToken ct = default(CancellationToken))
-        {
-            var tcs = new TaskCompletionSource<object>();
-            
-            var key = new Item( Guid.Parse(account.AccountId), account.Version);
-            if ( _cardDetails.ContainsKey(key))
-            {
-                _cardDetails.Remove(key);
-            }
-
-            _cardDetails.Add(key, account);
-            tcs.SetResult(new object());
             return tcs.Task;
         }
 
 
-        class Item : IEquatable<Item>
+        /// <summary>
+        /// Save the booking record
+        /// </summary>
+        /// <param name="booking">The booking to save</param>
+        /// <param name="ct">Token to allow cancelling the ongoing operation</param>
+        public Task SaveAsync(AccountCardDetails booking, CancellationToken ct = default(CancellationToken))
         {
-            public Item(Guid id, string version)
+            var tcs = new TaskCompletionSource<object>();
+
+            var key = booking.AccountId;
+            if (_bookings.ContainsKey(key))
             {
-                Id = id;
-                Version = version;
-            }
-            
-            public Guid Id { get;}
-            public string Version { get;}
-            
-            
-            public bool Equals(Item other)
-            {
-                if (ReferenceEquals(null, other)) return false;
-                if (ReferenceEquals(this, other)) return true;
-                return Id.Equals(other.Id) && string.Equals(Version, other.Version);
+                _bookings.Remove(key);
             }
 
-            public override bool Equals(object obj)
-            {
-                if (ReferenceEquals(null, obj)) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != this.GetType()) return false;
-                return Equals((Item) obj);
-            }
-
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    return (Id.GetHashCode() * 397) ^ (Version != null ? Version.GetHashCode() : 0);
-                }
-            }
-
-            public static bool operator ==(Item left, Item right)
-            {
-                return Equals(left, right);
-            }
-
-            public static bool operator !=(Item left, Item right)
-            {
-                return !Equals(left, right);
-            }
-
-       }
-
-     }
+            _bookings.Add(key, booking);
+            tcs.SetResult(new object());
+            return tcs.Task;
+        }
+    }
 }

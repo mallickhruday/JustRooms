@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Accounts.Adapters.Data;
 using Accounts.Ports.Commands;
 using Accounts.Ports.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Paramore.Brighter;
 using Paramore.Brighter.Logging.Attributes;
 using Paramore.Brighter.Policies.Attributes;
@@ -14,15 +15,15 @@ namespace Accounts.Ports.Handlers
     /// </summary>
     public class DeleteExistingAccountCommandHandlerAsync : RequestHandlerAsync<DeleteExistingAccountCommand>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly DbContextOptions<AccountContext> _options;
 
         /// <summary>
         /// Constructs a delete account handler
         /// </summary>
         /// <param name="unitOfWork">The storage we intend to delete from</param>
-        public DeleteExistingAccountCommandHandlerAsync(IUnitOfWork unitOfWork)
+        public DeleteExistingAccountCommandHandlerAsync(DbContextOptions<AccountContext> options)
         {
-            _unitOfWork = unitOfWork;
+            _options = options;
         }
         
         /// <summary>
@@ -35,10 +36,18 @@ namespace Accounts.Ports.Handlers
         [UsePolicyAsync(Policies.Catalog.DynamoDbAccess, step: 0)]
         public override async Task<DeleteExistingAccountCommand> HandleAsync(DeleteExistingAccountCommand command, CancellationToken cancellationToken = new CancellationToken())
         {
-            var repo = new AccountRepositoryAsync(_unitOfWork);
+            using (var uow = new AccountContext(_options))
+            {
+                using (var trans = uow.Database.BeginTransaction())
+                {
+                    var accountRepository = new AccountRepositoryAsync(new EFUnitOfWork(uow));
 
-            await repo.DeleteAsync(command.AccountId);
-            
+                    await accountRepository.DeleteAsync(command.AccountId);
+                    
+                    //TODO: Pass a delete event
+                }
+            }
+
             return await base.HandleAsync(command, cancellationToken);
         }
     }

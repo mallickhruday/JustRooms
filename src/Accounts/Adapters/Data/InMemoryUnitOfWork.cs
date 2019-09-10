@@ -12,21 +12,20 @@ namespace Accounts.Adapters.Data
     /// </summary>
     public class InMemoryUnitOfWork : IUnitOfWork
     {
-        private Dictionary<Item, Account> _accounts = new Dictionary<Item, Account>();
+        private Dictionary<Guid, Account> _bookings = new Dictionary<Guid, Account>();
         
        /// <summary>
-       /// Remove a guest account version, by default the snapshot which deletes the 'live' account but preserves history
+       /// Remove a guest booking version, by default the snapshot which deletes the 'live' booking but preserves history
        /// </summary>
-       /// <param name="accountId">The account to mark as deleted</param>
-       /// <param name="version">The version of the guest account to remove, defaults to the current snapshot which deletes the account</param>
+       /// <param name="bookingId">The booking to mark as deleted</param>
+       /// <param name="version">The version of the guest booking to remove, defaults to the current snapshot which deletes the booking</param>
        /// <param name="ct">Token to allow cancelling the ongoing operation</param>
-        public Task DeleteAsync(Guid accountId, string version = Account.SnapShot, CancellationToken ct = default(CancellationToken))
+        public Task DeleteAsync(Guid bookingId, CancellationToken ct = default(CancellationToken))
         {
             var tcs = new TaskCompletionSource<object>();
-            var item = new Item(accountId, version);
-            if (_accounts.ContainsKey(item))
+            if (_bookings.ContainsKey(bookingId))
             {
-                _accounts.Remove(item);
+                _bookings.Remove(bookingId);
             }
             
             tcs.SetResult(new object());
@@ -34,87 +33,39 @@ namespace Accounts.Adapters.Data
         }
 
        /// <summary>
-       /// Get an account by id (and version number)
+       /// Get an booking by id (and version number)
        /// </summary>
-       /// <param name="accountId">The id of the account to retrieve</param>
+       /// <param name="bookingId">The id of the booking to retrieve</param>
        /// <param name="version">The version to retrieve, by default it is the snapshot i.e. current live record</param>
        /// <param name="ct">Token to allow cancelling the ongoing operation</param>
-        public Task<Account> GetAsync(Guid accountId, string version = Account.SnapShot, CancellationToken ct = default(CancellationToken))
+        public Task<Account> GetAsync(Guid bookingId, CancellationToken ct = default(CancellationToken))
         {
             var tcs = new TaskCompletionSource<Account>();
-            _accounts.TryGetValue(new Item(accountId, version), out Account value);
+            _bookings.TryGetValue(bookingId, out Account value);
             tcs.SetResult(value);
             return tcs.Task;
          }
 
        
         /// <summary>
-        /// Save the account record
+        /// Save the booking record
         /// </summary>
-        /// <param name="account">The account to save</param>
+        /// <param name="booking">The booking to save</param>
         /// <param name="ct">Token to allow cancelling the ongoing operation</param>
-        public Task SaveAsync(Account account, CancellationToken ct = default(CancellationToken))
+        public Task SaveAsync(Account booking, CancellationToken ct = default(CancellationToken))
         {
             var tcs = new TaskCompletionSource<object>();
             
-            var key = new Item( Guid.Parse(account.AccountId), account.Version);
-            if ( _accounts.ContainsKey(key))
+            var key = booking.AccountId;
+            if ( _bookings.ContainsKey(key))
             {
-                _accounts.Remove(key);
+                _bookings.Remove(key);
             }
 
-            _accounts.Add(key, account);
+            _bookings.Add(key, booking);
             tcs.SetResult(new object());
             return tcs.Task;
         }
-
-
-        class Item : IEquatable<Item>
-        {
-            public Item(Guid id, string version)
-            {
-                Id = id;
-                Version = version;
-            }
-            
-            public Guid Id { get;}
-            public string Version { get;}
-            
-            
-            public bool Equals(Item other)
-            {
-                if (ReferenceEquals(null, other)) return false;
-                if (ReferenceEquals(this, other)) return true;
-                return Id.Equals(other.Id) && string.Equals(Version, other.Version);
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (ReferenceEquals(null, obj)) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != this.GetType()) return false;
-                return Equals((Item) obj);
-            }
-
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    return (Id.GetHashCode() * 397) ^ (Version != null ? Version.GetHashCode() : 0);
-                }
-            }
-
-            public static bool operator ==(Item left, Item right)
-            {
-                return Equals(left, right);
-            }
-
-            public static bool operator !=(Item left, Item right)
-            {
-                return !Equals(left, right);
-            }
-
-       }
-
-     }
+    }
 }
+

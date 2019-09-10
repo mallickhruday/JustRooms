@@ -23,7 +23,7 @@ namespace CreditCardCore.Ports.Repositories
 
         public async Task ReleaseAsync(CancellationToken ct = default(CancellationToken))
         {
-            var snapshot = await _unitOfWork.GetAsync(Guid.Parse(_accountId), AccountCardDetails.SnapShot, ct);
+            var snapshot = await _unitOfWork.GetAsync(Guid.Parse(_accountId), ct);
             if (snapshot.LockedBy == _lockedBy &&
                 snapshot.LockExpiresAt == _expiresAt.ToString(CultureInfo.InvariantCulture))
             {

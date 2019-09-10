@@ -29,7 +29,9 @@
         "ASPNETCORE_AWS__Region":"eu-west-1",
         "AWS_ACCESS_KEY_ID": "FakeAccessKey",
         "AWS_SECRET_ACCESS_KEY":"FakeSecretKey",
-        "AWS_DEFAULT_REGION":"eu-west-1"
+        "AWS_DEFAULT_REGION":"eu-west-1",
+        "ASPNETCORE_Database__Accounts":"Server=localhost;Uid=root;Pwd=root;Database=Accounts",
+        "ASPNETCORE_Database__MessageStore":"Server=localhost;Uid=root;Pwd=root;Database=Bookings"
       }
     }
   }
