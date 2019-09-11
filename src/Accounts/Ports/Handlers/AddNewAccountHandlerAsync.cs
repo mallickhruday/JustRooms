@@ -49,13 +49,12 @@ namespace Accounts.Ports.Handlers
                 {
                     var accountRepository = new AccountRepositoryAsync(new EFUnitOfWork(uow));
                     
-                    var account = new Account(
-                        command.Id,
-                        command.Name,
-                        command.Addresses,
-                        command.ContactDetails,
-                        command.CardDetails
-                    );
+                    var account = new Account();
+                    account.AccountId = command.Id;
+                    account.Name = new Name(account, command.Name.FirstName, command.Name.LastName);
+                    account.ContactDetails = new ContactDetails(account, command.ContactDetails.Email, command.ContactDetails.TelephoneNumber);
+                    account.CardDetails = new CardDetails(account, command.CardDetails.CardNumber, command.CardDetails.CardSecurityCode);
+                    account.Addresses = command.Addresses;
                     
                     await accountRepository.AddAsync(account);
 

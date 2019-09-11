@@ -21,7 +21,17 @@ namespace CreditCardCore.Adapters.Data
         }
 
         /// <summary>
-        /// Delete the item, by default the snapshot version, which deletes the live record, but keeps history
+        /// Save the item
+        /// </summary>
+        /// <param name="account">The account to save</param>
+        /// <param name="ct">Cancel the operataion</param>
+        public async Task AddAsync(AccountCardDetails account, CancellationToken ct = default(CancellationToken))
+        {
+            await _context.SaveChangesAsync(ct);
+        }
+        
+        /// <summary>
+        /// /// Delete the item, by default the snapshot version, which deletes the live record, but keeps history
         /// </summary>
         /// <param name="accountId">The account to delete</param>
         /// <param name="ct">Cancel the operation</param>
@@ -48,9 +58,10 @@ namespace CreditCardCore.Adapters.Data
         /// </summary>
         /// <param name="account">The account to save</param>
         /// <param name="ct">Cancel the operataion</param>
-        public async Task SaveAsync(AccountCardDetails account, CancellationToken ct = default(CancellationToken))
+        public async Task UpdateAsync(AccountCardDetails account, CancellationToken ct = default(CancellationToken))
         {
             await _context.SaveChangesAsync(ct);
         }
-     }
+
+    }
 }

@@ -35,7 +35,7 @@ namespace JustRoomsTests.DirectBooking.ports.handlers
                 {
                     RoomBookingId = Guid.NewGuid(),
                     DateOfFirstNight = new DateTime(2019, 07, 11),
-                    Price = new Money(226, "USD"),
+                    Price = 226, 
                     RoomType = RoomType.MasterSuite,
                     NumberOfGuests = 3,
                     NumberOfNights = 3,
@@ -54,7 +54,7 @@ namespace JustRoomsTests.DirectBooking.ports.handlers
                 var bookingResult = await handler.ExecuteAsync(new GetBookingById(booking.RoomBookingId));
 
                 //assert
-                Assert.That(bookingResult.BookingId, Is.EqualTo(booking.RoomBookingId));
+                Assert.That(bookingResult.BookingId, Is.EqualTo(booking.RoomBookingId.ToString()));
                 Assert.That(bookingResult.DateOfFirstNight, Is.EqualTo(booking.DateOfFirstNight));
                 Assert.That(bookingResult.Price, Is.EqualTo(booking.Price));
                 Assert.That(bookingResult.RoomType, Is.EqualTo(booking.RoomType));

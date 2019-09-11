@@ -22,6 +22,7 @@ namespace Accounts.Ports.Commands
             : base(Guid.NewGuid())
         {
             AccountId = accountId;
+            Name = name;
             Addresses = addresses;
             ContactDetails = contactDetails;
             CardDetails = cardDetails;

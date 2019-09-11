@@ -27,9 +27,9 @@ namespace DirectBooking.ports.repositories
         /// </summary>
         /// <param name="roomBooking">The roomBooking to add</param>
         /// <param name="ct">Operation cancellation</param>
-        public async Task AddAsync(RoomBooking roomBooking, CancellationToken ct = default(CancellationToken))
+        public async Task AddAsync(RoomBooking booking, CancellationToken ct = default(CancellationToken))
         {
-           await _unitOfWork.SaveAsync(roomBooking, ct);
+            await _unitOfWork.AddAsync(booking, ct);
         }
 
          /// <summary>
@@ -50,18 +50,14 @@ namespace DirectBooking.ports.repositories
         /// <returns>The roomBooking matching the Id, or null</returns>
         public async Task<RoomBooking> GetAsync(Guid bookingId, CancellationToken ct = default(CancellationToken))
         {
-            return await _unitOfWork.GetAsync(bookingId, ct);
-        }
-
-        /// <summary>
-        /// Get a specific version of an roomBooking
-        /// </summary>
-        /// <param name="bookingId">The roomBooking to get</param>
-        /// <param name="ct"></param>
-        /// <returns>The matching version of the roomBooking</returns>
-         public async Task<RoomBooking> GetAsync(Guid bookingId, string version, CancellationToken ct = default(CancellationToken))
-        {
-            return await _unitOfWork.GetAsync(bookingId, ct);
+            try
+            {
+                return await _unitOfWork.GetAsync(bookingId, ct);
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -83,7 +79,7 @@ namespace DirectBooking.ports.repositories
             var expiresAt = DateTime.UtcNow.AddMilliseconds(500);
             snapshot.LockExpiresAt = expiresAt.ToString(CultureInfo.InvariantCulture);
 
-            await _unitOfWork.SaveAsync(snapshot, ct);
+            await _unitOfWork.UpdateAsync(ct);
             
             return new AggregateLock(bookingId, whoIsLocking, expiresAt, _unitOfWork);
         }
@@ -97,7 +93,7 @@ namespace DirectBooking.ports.repositories
         public async Task UpdateAsync(RoomBooking newBookingVersion, AggregateLock aggregateLock, CancellationToken ct = default(CancellationToken))
         {
             //find the next version to use
-           await _unitOfWork.SaveAsync(newBookingVersion, ct);
+           await _unitOfWork.UpdateAsync(ct);
         }
 
 

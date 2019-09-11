@@ -10,6 +10,13 @@ namespace Accounts.Ports.Repositories
     /// </summary>
     public interface IUnitOfWork
     {
+        /// <summary> 
+        /// Save the item
+        /// </summary>
+        /// <param name="account">The account to save</param>
+        /// <param name="ct">Cancel the operataion</param>
+        Task<Account> AddAsync(Account account, CancellationToken ct = default(CancellationToken));
+        
         /// <summary>
         /// Delete the item, all versions
         /// </summary>
@@ -24,13 +31,13 @@ namespace Accounts.Ports.Repositories
         /// <param name="ct">Cancellation token</param>
         /// <returns>THe matching account</returns>
         Task<Account> GetAsync(Guid accountId, CancellationToken ct = default(CancellationToken));
-        
-        /// <summary> 
-        /// Save the item
+
+
+        /// <summary>
+        /// Save the account record
         /// </summary>
         /// <param name="account">The account to save</param>
-        /// <param name="ct">Cancel the operataion</param>
-        Task SaveAsync(Account account, CancellationToken ct = default(CancellationToken));
-        
+        /// <param name="ct">Token to allow cancelling the ongoing operation</param>
+        Task UpdateAsync(CancellationToken ct = default(CancellationToken));
    }
 }

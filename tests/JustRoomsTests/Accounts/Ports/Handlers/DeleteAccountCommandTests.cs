@@ -34,13 +34,13 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
                 var account = new Account()
                 {
                     AccountId = id,
-                    Name = new Name("Jack", "Torrance"),
+                    Name = new Name{FirstName = "Jack", LastName = "Torrance"},
                     Addresses = new List<Address>
                     {
                         new Address("Overlook Hotel", AddressType.Billing, "CO", "80517")
                     },
-                    ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                    CardDetails = new CardDetails("4104231121998973", "517"),
+                    ContactDetails = new ContactDetails{Email = "jack.torrance@shining.com", TelephoneNumber = "666-6666"},
+                    CardDetails = new CardDetails{CardNumber = "4104231121998973", CardSecurityCode = "517"},
                 };
                 
                 var repository = new AccountRepositoryAsync(new EFUnitOfWork(uow));

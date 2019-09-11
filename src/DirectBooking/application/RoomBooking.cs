@@ -1,7 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using Amazon.DynamoDBv2.DataModel;
-using DirectBooking.application.converters;
 
 namespace DirectBooking.application
 {
@@ -39,7 +37,7 @@ namespace DirectBooking.application
         /// <summary>
         /// The price per night of the booking
         /// </summary>
-        public Money Price { get; set; }
+        public double Price { get; set; }
         
         /// <summary>
         /// The account that the booking is for, if any
@@ -74,7 +72,7 @@ namespace DirectBooking.application
             int numberOfNights,
             int numberOfGuests,
             RoomType roomType,
-            Money price,
+            double price,
             string accountId
             )
         {

@@ -70,7 +70,7 @@ namespace Accounts.Adapters.Controllers
         public async Task<IActionResult> Post([FromBody]AccountDTO accountDto, CancellationToken ct)
         {
             var addNewAccountCommand = new AddNewAccountCommand(
-                new Name(accountDto.Name.FirstName, accountDto.Name.LastName),
+                new Name{FirstName = accountDto.Name.FirstName, LastName = accountDto.Name.LastName},
                 accountDto.Addresses.Select(addr =>
                         new Address(
                             addr.FistLineOfAddress,
@@ -78,9 +78,9 @@ namespace Accounts.Adapters.Controllers
                             addr.State,
                             addr.ZipCode))
                     .ToList(),
-                new ContactDetails(accountDto.ContactDetails.Email, accountDto.ContactDetails.TelephoneNumber),
-                new CardDetails(accountDto.CardDetails.CardNumber, accountDto.CardDetails.CardSecurityCode)
-            );
+                new ContactDetails{Email = accountDto.ContactDetails.Email, TelephoneNumber = accountDto.ContactDetails.TelephoneNumber},
+                new CardDetails{CardNumber = accountDto.CardDetails.CardNumber, CardSecurityCode = accountDto.CardDetails.CardSecurityCode}
+                );
                 
             await _commandProcessor.SendAsync(addNewAccountCommand, false, ct);
             var account = await _queryProcessor.ExecuteAsync(new GetAccountById(addNewAccountCommand.Id), ct); 
@@ -99,17 +99,23 @@ namespace Accounts.Adapters.Controllers
         {
             var updateExistingAccountCommand = new UpdateExistingAccountCommand(
                 Guid.Parse(id),
-                new Name(accountDto.Name.FirstName, accountDto.Name.LastName),
+                new Name {FirstName = accountDto.Name.FirstName, LastName = accountDto.Name.LastName},
                 accountDto.Addresses.Select(addr =>
                         new Address(
-                            addr.FistLineOfAddress, 
-                            Enum.Parse<AddressType>(addr.AddressType), 
-                            addr.State, 
+                            addr.FistLineOfAddress,
+                            Enum.Parse<AddressType>(addr.AddressType),
+                            addr.State,
                             addr.ZipCode))
                     .ToList(),
-                new ContactDetails(accountDto.ContactDetails.Email, accountDto.ContactDetails.TelephoneNumber),
-                new CardDetails(accountDto.CardDetails.CardNumber, accountDto.CardDetails.CardSecurityCode)
-                );
+                new ContactDetails
+                {
+                    Email = accountDto.ContactDetails.Email, TelephoneNumber = accountDto.ContactDetails.TelephoneNumber
+                },
+                new CardDetails
+                {
+                    CardNumber = accountDto.CardDetails.CardNumber,
+                    CardSecurityCode = accountDto.CardDetails.CardSecurityCode
+                });
             
             await _commandProcessor.SendAsync(updateExistingAccountCommand, false, ct);
             var account = await _queryProcessor.ExecuteAsync(new GetAccountById(updateExistingAccountCommand.AccountId), ct); 

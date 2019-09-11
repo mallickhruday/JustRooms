@@ -1,5 +1,6 @@
 using DirectBooking.application;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace DirectBooking.adapters.data
 {
@@ -18,12 +19,12 @@ namespace DirectBooking.adapters.data
                 optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=EFProviders.InMemory;Trusted_Connection=True;");
             }
 
-            // Fixes issue with MySql connector reporting nested transactions not supported https://github.com/aspnet/EntityFrameworkCore/issues/7017
-            //Database.AutoTransactionsEnabled = false;
+            // Fixes issue with MySql connector reporting InMemory Transactions not supported 
+            optionsBuilder.ConfigureWarnings((warnings) => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning));
 
             base.OnConfiguring(optionsBuilder);
         }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RoomBooking>()

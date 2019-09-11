@@ -44,7 +44,7 @@ namespace Accounts.Ports.Repositories
             {
                 snapshot.LockedBy = null;
                 snapshot.LockExpiresAt = null;
-                await _unitOfWork.SaveAsync(snapshot, ct);
+                await _unitOfWork.UpdateAsync(ct);
             }
         }
     }

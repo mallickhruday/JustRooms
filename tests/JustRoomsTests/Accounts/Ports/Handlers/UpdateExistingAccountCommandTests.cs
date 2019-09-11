@@ -31,38 +31,39 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
         public async Task When_updating_an_account()
         {
             var commandProcessor = new FakeCommandProcessor();
-            
+
             using (var uow = new AccountContext(_options))
             {
                 var id = Guid.NewGuid();
                 var account = new Account()
                 {
                     AccountId = id,
-                    Name = new Name("Jack", "Torrance"),
+                    Name = new Name {FirstName = "Jack", LastName = "Torrance"},
                     Addresses = new List<Address>
                     {
                         new Address("Overlook Hotel", AddressType.Billing, "CO", "80517")
                     },
-                    ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                    CardDetails = new CardDetails("4104231121998973", "517"),
+                    ContactDetails =
+                        new ContactDetails{Email = "jack.torrance@shining.com", TelephoneNumber = "666-6666"},
+                    CardDetails = new CardDetails {CardNumber = "4104231121998973", CardSecurityCode = "517"}
                 };
 
                 var repository = new AccountRepositoryAsync(new EFUnitOfWork(uow));
-                
+
                 await repository.AddAsync(account);
 
                 //create update command
                 var updateCommand = new UpdateExistingAccountCommand
                 (
                     id,
-                    new Name("Here's", "Johnny!!!"),
+                    new Name {FirstName = "Here's", LastName = "Johnny!!!"},
                     new List<Address>
                     {
                         new Address("Overlook Hotel", AddressType.Billing, "CO", "80517")
                     },
-                    new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                    new CardDetails("4104231121998973", "517")
-                );
+                    new ContactDetails {Email = "jack.torrance@shining.com", TelephoneNumber = "666-6666"},
+                    new CardDetails{CardNumber = "4104231121998973", CardSecurityCode = "517"}
+            );
 
                 var handler = new UpdateExistingAccountCommandHandlerAsync(_options, commandProcessor);
 
@@ -73,7 +74,7 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
                 //assert
                 //versions and change to current state
                 var updateAccount = await repository.GetAsync(id);
-                Assert.That(updateAccount.AccountId, Is.EqualTo(id.ToString()));
+                Assert.That(updateAccount.AccountId, Is.EqualTo(id));
                 Assert.That(updateAccount.Name.FirstName, Is.EqualTo(updateCommand.Name.FirstName));
                 Assert.That(updateAccount.Name.LastName, Is.EqualTo(updateCommand.Name.LastName));
             }
@@ -83,7 +84,7 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
         public async Task When_trying_to_update_a_locked_Account()
         {
             var commandProcessor = new FakeCommandProcessor();
-            
+
             using (var uow = new AccountContext(_options))
             {
                 //Add new account directly via repository not handler (needs both entries so no unit of work)
@@ -91,15 +92,16 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
                 var account = new Account()
                 {
                     AccountId = id,
-                    Name = new Name("Jack", "Torrance"),
+                    Name = new Name {FirstName = "Jack", LastName = "Torrance"},
                     Addresses = new List<Address>
                     {
                         new Address("Overlook Hotel", AddressType.Billing, "CO", "80517")
                     },
-                    ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                    CardDetails = new CardDetails("4104231121998973", "517"),
+                    ContactDetails = new ContactDetails
+                        {Email = "jack.torrance@shining.com", TelephoneNumber = "666-6666"},
+                    CardDetails = new CardDetails {CardNumber = "4104231121998973", CardSecurityCode = "517"},
                 };
-                
+
                 var repository = new AccountRepositoryAsync(new EFUnitOfWork(uow));
 
                 await repository.AddAsync(account);
@@ -108,14 +110,15 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
                 var updateCommand = new UpdateExistingAccountCommand
                 (
                     id,
-                    new Name("Here's", "Johnny!!!"),
+                    new Name {FirstName = "Here's", LastName = "Johnny!!!"},
+
                     new List<Address>
                     {
                         new Address("Overlook Hotel", AddressType.Billing, "CO", "80517")
                     },
-                    new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                    new CardDetails("4104231121998973", "517")
-                );
+                    new ContactDetails {Email = "jack.torrance@shining.com", TelephoneNumber = "666-6666"},
+                    new CardDetails{CardNumber = "4104231121998973", CardSecurityCode = "517"}
+            );
                 updateCommand.LockBy = "GRADY";
 
 
@@ -134,9 +137,6 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
 
                 var amendedAccount = await repository.GetAsync(id);
                 Assert.That(amendedAccount.Name.FirstName, Is.EqualTo(updateCommand.Name.FirstName));
-                
-                Assert.IsTrue(commandProcessor.RaiseAccountEvent);
-                Assert.IsTrue(commandProcessor.AllSent);
             }
 
         }

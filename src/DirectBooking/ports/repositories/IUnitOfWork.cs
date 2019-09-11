@@ -11,6 +11,13 @@ namespace DirectBooking.ports.repositories
     public interface IUnitOfWork
     {
         /// <summary>
+        /// Save the item
+        /// </summary>
+        /// <param name="booking">The booking to save</param>
+        /// <param name="ct">Cancel the operataion</param>
+        Task<RoomBooking> AddAsync(RoomBooking booking, CancellationToken ct = default(CancellationToken));
+        
+        /// <summary>
         /// Delete the item, all versions
         /// </summary>
         /// <param name="bookingId">The booking to delete</param>
@@ -28,9 +35,8 @@ namespace DirectBooking.ports.repositories
         /// <summary> 
         /// Save the item
         /// </summary>
-        /// <param name="roomBooking">The room booking to save</param>
         /// <param name="ct">Cancel the operataion</param>
-        Task SaveAsync(RoomBooking booking, CancellationToken ct = default(CancellationToken));
-        
+        Task UpdateAsync(CancellationToken ct = default(CancellationToken));
+
    }
 }

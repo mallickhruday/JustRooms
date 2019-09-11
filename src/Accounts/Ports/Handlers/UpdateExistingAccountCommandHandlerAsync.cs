@@ -55,22 +55,20 @@ namespace Accounts.Ports.Handlers
                         aggregateLock = await accountRepositoryAsync.LockAsync(command.AccountId.ToString(), command.LockBy,
                             cancellationToken);
 
-                        var newAccountVersion = new Account
-                        {
-                            AccountId = command.AccountId,
-                            Name = command.Name,
-                            Addresses = command.Addresses,
-                            CardDetails = command.CardDetails,
-                            ContactDetails = command.ContactDetails,
-                        };
+                        var account = await accountRepositoryAsync.GetAsync(command.AccountId);
 
-                        await accountRepositoryAsync.UpdateAsync(newAccountVersion, aggregateLock);
+                        account.Name = new Name(account, command.Name.FirstName, command.Name.LastName);
+                        account.ContactDetails = new ContactDetails(account, command.ContactDetails.Email, command.ContactDetails.TelephoneNumber);
+                        account.CardDetails = new CardDetails(account, command.CardDetails.CardNumber, command.CardDetails.CardSecurityCode);
+                        account.Addresses = command.Addresses;
+     
+                        await accountRepositoryAsync.UpdateAsync(account, aggregateLock, cancellationToken);
                         
-                        eventId =_commandProcessor.DepositPost(new AccountEvent
+                        eventId = await _commandProcessor.DepositPostAsync(new AccountEvent
                         {
                             Id = Guid.NewGuid(),
-                            AccountId = newAccountVersion.AccountId.ToString(),
-                            Addresses = newAccountVersion.Addresses.Select(
+                            AccountId = account.AccountId.ToString(),
+                            Addresses = account.Addresses.Select(
                                 addr => new AddressEvent
                                 {
                                     AddressType = addr.AddressType.ToString(),
@@ -78,19 +76,18 @@ namespace Accounts.Ports.Handlers
                                     State = addr.State,
                                     ZipCode = addr.ZipCode
                                 }).ToList(),
-                            Name = new NameEvent {FirstName = newAccountVersion.Name.FirstName, LastName = newAccountVersion.Name.LastName},
+                            Name = new NameEvent {FirstName = account.Name.FirstName, LastName = account.Name.LastName},
                             CardDetails = new CardDetailsEvent
                             {
-                                CardNumber = newAccountVersion.CardDetails.CardNumber,
-                                CardSecurityCode = newAccountVersion.CardDetails.CardSecurityCode
+                                CardNumber = account.CardDetails.CardNumber,
+                                CardSecurityCode = account.CardDetails.CardSecurityCode
                             },
                             ContactDetails = new ContactDetailsEvent
                             {
-                                Email = newAccountVersion.ContactDetails.Email,
-                                TelephoneNumber = newAccountVersion.ContactDetails.TelephoneNumber
-                            },
-                            Version = newAccountVersion.Version
-                        });
+                                Email = account.ContactDetails.Email,
+                                TelephoneNumber = account.ContactDetails.TelephoneNumber
+                            }
+                        }, false, cancellationToken);
                         
                         trans.Commit();
                     }
@@ -102,7 +99,7 @@ namespace Accounts.Ports.Handlers
                 }
             }
             
-            _commandProcessor.ClearOutbox(eventId);
+            _commandProcessor.ClearOutboxAsync(new []{eventId});
 
             return await base.HandleAsync(command, cancellationToken);
             

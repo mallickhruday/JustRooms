@@ -24,7 +24,7 @@ namespace Tests.DirectBooking.adapters.data
         public void Initialise()
         {
             _options = new DbContextOptionsBuilder<BookingContext>()
-                .UseMySql( "Server=localhost;Uid=root;Pwd=root;Database=Accounts")
+                .UseMySql( "Server=localhost;Uid=root;Pwd=root;Database=Bookings")
                 .Options;
             
             using (var context = new BookingContext(_options))
@@ -44,7 +44,7 @@ namespace Tests.DirectBooking.adapters.data
                 {
                     RoomBookingId = Guid.NewGuid(),
                     DateOfFirstNight = new DateTime(2019, 07, 11),
-                    Price = new Money(226, "USD"),
+                    Price = 226,
                     RoomType = RoomType.MasterSuite,
                     NumberOfGuests = 3,
                     NumberOfNights = 3,

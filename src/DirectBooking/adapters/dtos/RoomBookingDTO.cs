@@ -41,11 +41,6 @@ namespace DirectBooking.adapters.dtos
         /// </summary>
         public string AccountId { get; set; }
         
-        /// <summary>
-        /// The currency of the transaction
-        /// </summary>
-        public string Currency { get; set; }
-
         public static RoomBookingDTO FromQueryResult(BookingResult booking)
         {
             return new RoomBookingDTO
@@ -55,11 +50,9 @@ namespace DirectBooking.adapters.dtos
                 NumberOfNights = booking.NumberOfNights,
                 NumberOfGuests = booking.NumberOfGuests,
                 RoomType = booking.RoomType.ToString(),
-                Amount = Convert.ToString(booking.Price.Amount, CultureInfo.InvariantCulture),
-                Currency = booking.Price.Currency,
+                Amount = Convert.ToString(booking.Price, CultureInfo.InvariantCulture),
                 AccountId = booking.AccountId
             };
         }
-
     }
 }

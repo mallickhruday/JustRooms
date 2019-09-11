@@ -18,7 +18,7 @@ namespace CreditCardCore.Ports.Repositories
         
         public async Task AddAsync(AccountCardDetails cardDetails, CancellationToken ct = default(CancellationToken))
         {
-            await _unitOfWork.SaveAsync(cardDetails, ct);
+            await _unitOfWork.AddAsync(cardDetails, ct);
         }    
 
         /// <summary>
@@ -39,7 +39,15 @@ namespace CreditCardCore.Ports.Repositories
         /// <returns>The cardDetails matching the Id, or null</returns>
         public async Task<AccountCardDetails> GetAsync(Guid accountId, CancellationToken ct = default(CancellationToken))
         {
-            return await _unitOfWork.GetAsync(accountId, ct);
+            try
+            {
+                return await _unitOfWork.GetAsync(accountId, ct);
+            }
+            catch (InvalidOperationException)
+            {
+                //not in database
+                return null;
+            }
         }
 
         /// <summary>
@@ -96,16 +104,14 @@ namespace CreditCardCore.Ports.Repositories
             var expiresAt = DateTime.UtcNow.AddMilliseconds(500);
             snapshot.LockExpiresAt = expiresAt.ToString(CultureInfo.InvariantCulture);
 
-            await _unitOfWork.SaveAsync(snapshot, ct);
+            await _unitOfWork.UpdateAsync(snapshot, ct);
             
             return new AggregateLock(accountId, whoIsLocking, expiresAt, _unitOfWork);
         }
         
         private async Task UpdateAsync(AccountCardDetails cardDetails, AggregateLock aggregateLock, CancellationToken ct = default(CancellationToken))
         {
-            await _unitOfWork.SaveAsync(cardDetails, ct);
+            await _unitOfWork.AddAsync(cardDetails, ct);
         }
-
-
     }
 }

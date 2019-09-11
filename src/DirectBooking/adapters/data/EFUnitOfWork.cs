@@ -23,6 +23,18 @@ namespace DirectBooking.adapters.data
             _context = context;
         }
 
+         /// <summary>
+         /// Save the item
+         /// </summary>
+         /// <param name="booking">The booking to save</param>
+         /// <param name="ct">Cancel the operataion</param>
+         public async Task<RoomBooking> AddAsync(RoomBooking booking, CancellationToken ct = default(CancellationToken))
+         {
+             var entityEntry = _context.Bookings.Add(booking);
+             await _context.SaveChangesAsync(ct);
+             return entityEntry.Entity;
+         }
+         
         /// <summary>
         /// Delete the item, by default the snapshot version, which deletes the live record, but keeps history
         /// </summary>
@@ -49,9 +61,8 @@ namespace DirectBooking.adapters.data
         /// <summary>
         /// Save the item
         /// </summary>
-        /// <param name="booking">The booking to save</param>
         /// <param name="ct">Cancel the operataion</param>
-        public async Task SaveAsync(RoomBooking booking, CancellationToken ct = default(CancellationToken))
+        public async Task UpdateAsync(CancellationToken ct = default(CancellationToken))
         {
             await _context.SaveChangesAsync(ct);
         }

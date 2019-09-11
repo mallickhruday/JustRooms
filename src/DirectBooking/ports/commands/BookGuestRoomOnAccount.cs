@@ -27,7 +27,7 @@ namespace DirectBooking.ports.commands
         /// <summary>
         /// The cost of the room, per night
         /// </summary>
-        public Money Price { get; set; }
+        public double Price { get; set; }
         
         /// <summary>
         /// The number of nights of the booking
@@ -50,7 +50,7 @@ namespace DirectBooking.ports.commands
             Guid bookingId,
             DateTime dateOfFirstNight,
             RoomType type,
-            Money price,
+            double price,
             int numberOfNights,
             int numberOfGuests,
             string accountId

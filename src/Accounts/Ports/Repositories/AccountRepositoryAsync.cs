@@ -30,7 +30,7 @@ namespace Accounts.Ports.Repositories
         /// <param name="ct">Operation cancellation</param>
         public async Task AddAsync(Account account, CancellationToken ct = default(CancellationToken))
         {
-            await _unitOfWork.SaveAsync(account, ct);
+            await _unitOfWork.AddAsync(account, ct);
         }
 
          /// <summary>
@@ -51,7 +51,15 @@ namespace Accounts.Ports.Repositories
         /// <returns>The account matching the Id, or null</returns>
         public async Task<Account> GetAsync(Guid accountId, CancellationToken ct = default(CancellationToken))
         {
-            return await _unitOfWork.GetAsync(accountId, ct);
+            try
+            {
+                return await _unitOfWork.GetAsync(accountId, ct);
+            }
+            catch (InvalidOperationException)
+            {
+                //not in database
+                return null;
+            }
         }
 
         /// <summary>
@@ -85,7 +93,7 @@ namespace Accounts.Ports.Repositories
             var expiresAt = DateTime.UtcNow.AddMilliseconds(500);
             snapshot.LockExpiresAt = expiresAt.ToString(CultureInfo.InvariantCulture);
 
-            await _unitOfWork.SaveAsync(snapshot, ct);
+            await _unitOfWork.UpdateAsync(ct);
             
             return new AggregateLock(accountId, whoIsLocking, expiresAt, _unitOfWork);
         }
@@ -93,13 +101,17 @@ namespace Accounts.Ports.Repositories
         /// <summary>
         /// Update an account
         /// </summary>
-        /// <param name="newAccountVersion">The new account version</param>
+        /// <param name="account"></param>
         /// <param name="aggregateLock">A pessimistic lock, retrieved from a Lock call, that allows us to update this guest account</param>
         /// <param name="ct">A token for operation cancellation</param>
-        public async Task UpdateAsync(Account newAccountVersion, AggregateLock aggregateLock, CancellationToken ct = default(CancellationToken))
+        /// <param name="newAccountVersion">The new account version</param>
+        public async Task UpdateAsync(Account account, AggregateLock aggregateLock,
+            CancellationToken ct = default(CancellationToken))
         {
-            await _unitOfWork.SaveAsync(newAccountVersion, ct);
- 
+            if (aggregateLock != null)
+            {
+                await _unitOfWork.UpdateAsync(ct);
+            }
         }
     }
 }

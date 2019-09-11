@@ -24,6 +24,18 @@ namespace Accounts.Adapters.Data
         }
 
         /// <summary>
+        /// Save the item
+        /// </summary>
+        /// <param name="account">The account to save</param>
+        /// <param name="ct">Cancel the operataion</param>
+        public async Task<Account> AddAsync(Account account, CancellationToken ct = default(CancellationToken))
+        {
+            var entityEntry = _context.Accounts.Add(account);
+            await _context.SaveChangesAsync(ct);
+            return entityEntry.Entity;
+        }
+        
+         /// <summary>
         /// Delete the item, by default the snapshot version, which deletes the live record, but keeps history
         /// </summary>
         /// <param name="accountId">The account to delete</param>
@@ -43,17 +55,26 @@ namespace Accounts.Adapters.Data
         /// <returns>THe matching booking</returns>
         public async Task<Account> GetAsync(Guid accountId, CancellationToken ct = default(CancellationToken))
         {
-            return await _context.Accounts.SingleAsync(t => t.AccountId == accountId, ct);
+            return await _context.Accounts
+                .Include(account => account.Addresses)
+                .Include(account => account.Name)
+                .Include(account => account.CardDetails)
+                .Include(account => account.ContactDetails)
+                .SingleAsync(t => t.AccountId == accountId, ct);
         }
 
         /// <summary>
-        /// Save the item
+        /// Updates an existing entity
         /// </summary>
-        /// <param name="account">The account to save</param>
-        /// <param name="ct">Cancel the operataion</param>
-        public async Task SaveAsync(Account account, CancellationToken ct = default(CancellationToken))
+        /// <param name="account"></param>
+        /// <param name="ct">Cancellation token</param>
+        /// <param name="updatedEntity">The existing entity</param>
+        /// <returns></returns>
+        public async Task UpdateAsync(CancellationToken ct = default(CancellationToken))
         {
-            await _context.SaveChangesAsync(ct);
+             await _context.SaveChangesAsync(ct);
         }
-     }
+         
+
+    }
 }

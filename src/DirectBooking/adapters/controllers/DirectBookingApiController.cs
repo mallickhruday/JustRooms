@@ -38,7 +38,7 @@ namespace DirectBooking.adapters.controllers
                 Guid.NewGuid(),
                 roomBookingDto.DateOfFirstNight,
                 Enum.Parse<RoomType>(roomBookingDto.RoomType),
-                new Money(Convert.ToDouble(roomBookingDto.Amount), roomBookingDto.Currency),
+                Convert.ToDouble(roomBookingDto.Amount),
                 roomBookingDto.NumberOfNights,
                 roomBookingDto.NumberOfGuests,
                 roomBookingDto.AccountId

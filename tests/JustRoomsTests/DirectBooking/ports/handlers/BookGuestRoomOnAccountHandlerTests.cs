@@ -42,18 +42,18 @@ namespace JustRoomsTests.DirectBooking.ports.handlers
                     NumberOfNights = 1,
                     NumberOfGuests = 1,
                     Type = RoomType.King,
-                    Price = new Money(120, "GBP")
-
+                    Price = 120
                 };
-
-                var messagePublisher = A.Fake<IAmACommandProcessor>();
-                var handler = new BookGuestRoomOnAccountHandlerAsync(_options, messagePublisher);
+                
+                var commandProcessor = new FakeCommandProcessor();
+                var handler = new BookGuestRoomOnAccountHandlerAsync(_options, commandProcessor);
 
                 //act
                 await handler.HandleAsync(booking);
 
                 //assert
-                var savedBooking = await new RoomBookingRepositoryAsync(new EFUnitOfWork(uow)).GetAsync(booking.BookingId);
+                var roomBookingRepositoryAsync = new RoomBookingRepositoryAsync(new EFUnitOfWork(uow));
+                var savedBooking = await roomBookingRepositoryAsync.GetAsync(booking.BookingId);
                 
                 Assert.That(savedBooking.RoomBookingId, Is.EqualTo(booking.BookingId));
                 Assert.That(savedBooking.DateOfFirstNight, Is.EqualTo(booking.DateOfFirstNight));
@@ -62,9 +62,9 @@ namespace JustRoomsTests.DirectBooking.ports.handlers
                 Assert.That(savedBooking.RoomType, Is.EqualTo(booking.Type));
                 Assert.That(savedBooking.Price, Is.EqualTo(booking.Price));
                 Assert.That(savedBooking.AccountId, Is.EqualTo(booking.AccountId));
-
-                A.CallTo(() => messagePublisher.PostAsync(A<GuestRoomBookingMade>._, A<bool>._, A<CancellationToken>._))
-                    .MustHaveHappened();
+                
+                Assert.That(commandProcessor.AllSent);
+                Assert.That(commandProcessor.RaiseRoomBookingEvent);
             }
         }
 

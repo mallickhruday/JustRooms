@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Accounts.Ports.Events;
+using DirectBooking.ports.events;
 using Paramore.Brighter;
 
 namespace JustRoomsTests
@@ -13,6 +15,7 @@ namespace JustRoomsTests
         private List<Guid> depositIds = new List<Guid>();
         
         public bool RaiseAccountEvent {get; private set;}
+        public bool RaiseRoomBookingEvent { get; private set; }
         public bool AllSent { get; set; }
 
         void IAmACommandProcessor.Post<T>(T request)
@@ -21,8 +24,14 @@ namespace JustRoomsTests
             {
                 RaiseAccountEvent = true;
             }
+
+            if (request.GetType() == typeof(GuestRoomBookingMade))
+            {
+                RaiseRoomBookingEvent = true;
+            }
             
         }
+
 
         Task IAmACommandProcessor.PostAsync<T>(T request, bool continueOnCapturedContext, CancellationToken cancellationToken)
         {
@@ -40,6 +49,11 @@ namespace JustRoomsTests
                 depositedEvents.Add(request);
                 RaiseAccountEvent = true;
             }
+            else if (request.GetType() == typeof(GuestRoomBookingMade))
+            {
+                depositedEvents.Add(request);
+                RaiseRoomBookingEvent = true;
+            }
 
             var depositId = Guid.NewGuid();
             depositIds.Add(depositId);
@@ -47,10 +61,14 @@ namespace JustRoomsTests
             return depositId;
         }
 
-        public async Task<Guid> DepositPostAsync<T>(T request, bool continueOnCapturedContext = false,
-            CancellationToken cancellationToken = new CancellationToken()) where T : class, IRequest
+        public Task<Guid> DepositPostAsync<T>(T request, bool continueOnCapturedContext = false, CancellationToken cancellationToken = new CancellationToken()) where T : class, IRequest
         {
-            throw new NotImplementedException();
+            var tcs = new TaskCompletionSource<Guid>();
+
+            var postId = DepositPost(request);
+            
+            tcs.SetResult(postId);
+            return tcs.Task;
         }
 
         public void ClearOutbox(params Guid[] posts)
@@ -67,10 +85,9 @@ namespace JustRoomsTests
         }
 
 
-        public async Task ClearOutboxAsync(IEnumerable<Guid> posts, bool continueOnCapturedContext = false,
-            CancellationToken cancellationToken = new CancellationToken())
+        public async Task ClearOutboxAsync(IEnumerable<Guid> posts, bool continueOnCapturedContext = false, CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            ClearOutbox(posts.ToArray());
         }
 
         public TResponse Call<T, TResponse>(T request, int timeOutInMilliseconds) where T : class, ICall where TResponse : class, IResponse

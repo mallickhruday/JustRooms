@@ -33,13 +33,13 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
             var command = new AddNewAccountCommand()
             {
                 Id = Guid.NewGuid(),
-                Name = new Name("Jack", "Torrance"),
+                Name = new Name{FirstName = "Jack", LastName = "Torrance"},
                 Addresses = new List<Address>
                 {
                     new Address("Overlook Hotel", AddressType.Billing, "CO", "80517")
                 },
-                ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                CardDetails = new CardDetails("4104231121998973", "517")
+                ContactDetails = new ContactDetails{Email = "jack.torrance@shining.com", TelephoneNumber = "666-6666"},
+                CardDetails = new CardDetails{CardNumber = "4104231121998973",CardSecurityCode = "517"}
             };
             
             //act
@@ -48,7 +48,7 @@ namespace JustRoomsTests.Accounts.Ports.Handlers
             var savedAccount = await new EFUnitOfWork(new AccountContext(_options)).GetAsync(command.Id);
 
             //assert
-            Assert.That(savedAccount.AccountId, Is.EqualTo(command.Id.ToString()));
+            Assert.That(savedAccount.AccountId, Is.EqualTo(command.Id));
             Assert.That(savedAccount.Name.FirstName, Is.EqualTo(command.Name.FirstName));
             Assert.That(savedAccount.Name.LastName, Is.EqualTo(command.Name.LastName));
             var expectedAddress = command.Addresses.First();

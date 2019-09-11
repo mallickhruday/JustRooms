@@ -41,18 +41,18 @@ namespace JustRoomsTests.Accounts.adapters.data
                 var id = Guid.NewGuid();
                 var account = new Account()
                 {
-                    AccountId = id,
-                    Name = new Name("Jack", "Torrance"),
-                    Addresses = new List<Address>
+                   AccountId = id,
+                   Addresses = new List<Address>
                     {
                         new Address("Overlook Hotel", AddressType.Work, "CO", "80517"),
                         new Address("Overlook Hotel", AddressType.Billing, "CO", "80517")
                     },
-                    ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                    CardDetails = new CardDetails("4104231121998973", "517"),
                     LockedBy = "SYS",
                     LockExpiresAt = DateTime.Now.AddMilliseconds(500).Ticks.ToString()
                 };
+                account.Name = new Name(account, "Jack", "Torrance");
+                account.ContactDetails = new ContactDetails(account, "jack.torrance@shining.com", "666-6666");
+                account.CardDetails = new CardDetails(account, "4104231121998973", "517");
 
                 var accountRepository = new AccountRepositoryAsync(new EFUnitOfWork(uow));
 
@@ -64,7 +64,7 @@ namespace JustRoomsTests.Accounts.adapters.data
                 var savedAccount = await accountRepository.GetAsync(id);
 
                 //assert
-                Assert.That(savedAccount.AccountId, Is.EqualTo(id.ToString()));
+                Assert.That(savedAccount.AccountId, Is.EqualTo(id));
                 Assert.That(savedAccount.Name.FirstName, Is.EqualTo(account.Name.FirstName));
                 Assert.That(savedAccount.Name.LastName, Is.EqualTo(account.Name.LastName));
                 Assert.That(savedAccount.Addresses.First().AddressType,
@@ -92,17 +92,19 @@ namespace JustRoomsTests.Accounts.adapters.data
                 var id = Guid.NewGuid();
                 var account = new Account()
                 {
-                    AccountId = id,
-                    Name = new Name("Jack", "Torrance"),
-                    Addresses = new List<Address>
+                   AccountId = id,
+                   Addresses = new List<Address>
                     {
                         new Address("Overlook Hotel", AddressType.Work, "CO", "80517"),
                         new Address("Overlook Hotel", AddressType.Billing, "CO", "80517")
                     },
-                    ContactDetails = new ContactDetails("jack.torrance@shining.com", "666-6666"),
-                    CardDetails = new CardDetails("4104231121998973", "517"),
+                    LockedBy = "SYS",
+                    LockExpiresAt = DateTime.Now.AddMilliseconds(500).Ticks.ToString()
                 };
-
+                account.Name = new Name(account, "Jack", "Torrance");
+                account.ContactDetails = new ContactDetails(account, "jack.torrance@shining.com", "666-6666");
+                account.CardDetails = new CardDetails(account, "4104231121998973", "517");
+ 
                 var accountRepository = new AccountRepositoryAsync(new EFUnitOfWork(uow));
 
                 await accountRepository.AddAsync(account);

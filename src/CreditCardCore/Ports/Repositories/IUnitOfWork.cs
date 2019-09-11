@@ -7,7 +7,14 @@ namespace CreditCardCore.Ports.Repositories
 {
     public interface IUnitOfWork
     {
-        /// <summary>
+         /// <summary> 
+        /// Save the item
+        /// </summary>
+        /// <param name="account">The account to save</param>
+        /// <param name="ct">Cancel the operataion</param>
+        Task AddAsync(AccountCardDetails account, CancellationToken ct = default(CancellationToken));
+         
+         /// <summary>
         /// Delete the item, all versions
         /// </summary>
         /// <param name="accountId">The account to delete</param>
@@ -22,12 +29,13 @@ namespace CreditCardCore.Ports.Repositories
         /// <returns>THe matching account</returns>
         Task<AccountCardDetails> GetAsync(Guid accountId, CancellationToken ct = default(CancellationToken));
         
-         /// <summary> 
-        /// Save the item
+        /// <summary>
+        /// Save the account record
         /// </summary>
         /// <param name="account">The account to save</param>
-        /// <param name="ct">Cancel the operataion</param>
-        Task SaveAsync(AccountCardDetails account, CancellationToken ct = default(CancellationToken));
+        /// <param name="ct">Token to allow cancelling the ongoing operation</param>
+        Task UpdateAsync(AccountCardDetails account, CancellationToken ct = default(CancellationToken));
+  
         
    }
 }

@@ -33,7 +33,7 @@ namespace JustRoomsTests.DirectBooking.ports.results
         /// <summary>
         /// The price per night of the booking
         /// </summary>
-        public Money Price { get; set; }
+        public double Price { get; set; }
         
         /// <summary>
         /// The account that the booking is for, if any

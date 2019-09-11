@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Amazon.DynamoDBv2.DataModel;
-using Accounts.Application.Converters;
 
 namespace Accounts.Application
 {
