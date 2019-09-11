@@ -27,6 +27,7 @@ namespace CreditCardCore.Adapters.Data
         /// <param name="ct">Cancel the operataion</param>
         public async Task AddAsync(AccountCardDetails account, CancellationToken ct = default(CancellationToken))
         {
+            _context.Accounts.Add(account);
             await _context.SaveChangesAsync(ct);
         }
         

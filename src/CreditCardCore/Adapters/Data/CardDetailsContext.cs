@@ -1,5 +1,4 @@
 using CreditCardCore.Application;
-using CreditCardCore.Ports.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 

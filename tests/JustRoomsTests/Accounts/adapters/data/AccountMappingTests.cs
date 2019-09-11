@@ -59,8 +59,6 @@ namespace JustRoomsTests.Accounts.adapters.data
                 //act
                 await accountRepository.AddAsync(account);
 
-                await Task.Delay(50);
-
                 var savedAccount = await accountRepository.GetAsync(id);
 
                 //assert

@@ -50,18 +50,6 @@ namespace CreditCardCore.Ports.Repositories
             }
         }
 
-        /// <summary>
-        /// Get a specific version of an cardDetails
-        /// </summary>
-        /// <param name="accountId">The cardDetails to get</param>
-        /// <param name="version">The version of the cardDetails expressed as "VN" where V0 is the snapshot </param>
-        /// <param name="ct"></param>
-        /// <returns>The matching version of the cardDetails</returns>
-         public async Task<AccountCardDetails> GetAsync(Guid accountId, string version, CancellationToken ct = default(CancellationToken))
-        {
-            return await _unitOfWork.GetAsync(accountId, ct);
-        }
-
         public async Task UpsertAsync(AccountCardDetails cardDetails, CancellationToken ct = default(CancellationToken))
         {
             //if it exists
