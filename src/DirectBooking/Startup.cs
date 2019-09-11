@@ -66,11 +66,12 @@ namespace DirectBooking
                 {
                     options.PolicyRegistry = policyRegistry;
                     options.BrighterMessaging = new BrighterMessaging(messageStore, producer);
+                    options.CommandProcessorLifetime = ServiceLifetime.Scoped;
                 })
                 .AsyncHandlersFromAssemblies(typeof(BookGuestRoomOnAccountHandlerAsync).Assembly)
                 .MapperRegistryFromAssemblies(typeof(GuestRoomBookingMadeMapper).Assembly);
 
-            services.AddDarker()
+            services.AddDarker(options => options.QueryProcessorLifetime = ServiceLifetime.Scoped)
                 .AddHandlersFromAssemblies(typeof(GetBookingByIdHandlerAsync).Assembly);
 
             services.AddOpenApiDocument(config =>

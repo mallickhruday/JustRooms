@@ -1,5 +1,6 @@
 ﻿using System;
 using Accounts.Adapters.Data;
+using Accounts.Ports.Events;
 using Accounts.Ports.Handlers;
 using Accounts.Ports.Policies;
 using Microsoft.AspNetCore.Builder;
@@ -65,11 +66,13 @@ namespace Accounts
             services.AddBrighter(options =>
                 {
                     options.PolicyRegistry = policyRegistry;
-                            options.BrighterMessaging = new BrighterMessaging(new InMemoryOutbox(), producer);
+                    options.BrighterMessaging = new BrighterMessaging(new InMemoryOutbox(), producer);
+                    options.CommandProcessorLifetime = ServiceLifetime.Scoped;
                 })
-                .AsyncHandlersFromAssemblies(typeof(AddNewAccountHandlerAsync).Assembly);
+                .AsyncHandlersFromAssemblies(typeof(AddNewAccountHandlerAsync).Assembly)
+                .MapperRegistryFromAssemblies(typeof(AccountEvent).Assembly);
 
-            services.AddDarker()
+            services.AddDarker(options => options.HandlerLifetime = ServiceLifetime.Scoped)
                 .AddHandlersFromAssemblies(typeof(GetAccountByIdHandlerAsync).Assembly);
 
             services.AddOpenApiDocument(config =>
