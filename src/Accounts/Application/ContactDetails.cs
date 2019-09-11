@@ -35,7 +35,7 @@ namespace Accounts.Application
 
         /// <summary>
         /// The account that we belong to
-        /// </summary
+        /// </summary>
         public Guid AccountId { get; set; }
 
         /// <summary>

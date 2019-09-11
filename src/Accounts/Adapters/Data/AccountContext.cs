@@ -4,14 +4,31 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Accounts.Adapters.Data
 {
+    /// <summary>
+    /// A EF unit of work for Accounts
+    /// </summary>
     public class AccountContext : DbContext
     {
+        /// <summary>
+        /// Our set of accounts
+        /// </summary>
         public DbSet<Account> Accounts {get; set; }
 
+        /// <summary>
+        /// create am account context 
+        /// </summary>
         protected AccountContext  () {}
 
+        /// <summary>
+        /// create an account context against a Db
+        /// </summary>
+        /// <param name="options"></param>
         public AccountContext(DbContextOptions<AccountContext> options) : base(options){}
 
+        /// <summary>
+        /// Configure our database
+        /// </summary>
+        /// <param name="optionsBuilder"></param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

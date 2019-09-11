@@ -66,9 +66,7 @@ namespace Accounts.Adapters.Data
         /// <summary>
         /// Updates an existing entity
         /// </summary>
-        /// <param name="account"></param>
         /// <param name="ct">Cancellation token</param>
-        /// <param name="updatedEntity">The existing entity</param>
         /// <returns></returns>
         public async Task UpdateAsync(CancellationToken ct = default(CancellationToken))
         {

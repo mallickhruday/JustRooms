@@ -8,9 +8,10 @@ namespace Accounts.Application
     /// </summary>
     public class CardDetails
     {
-        public CardDetails()
-        {
-        }
+        /// <summary>
+        /// The card details for a guest
+        /// </summary>
+        public CardDetails() {}
 
         /// <summary>
         /// Construct new card detail;s
@@ -33,7 +34,7 @@ namespace Accounts.Application
 
         /// <summary>
         /// The account that we belong to
-        /// </summary
+        /// </summary>
         public Guid AccountId { get; set; }
 
         /// <summary>

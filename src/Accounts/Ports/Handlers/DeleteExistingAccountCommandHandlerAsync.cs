@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Accounts.Adapters.Data;
@@ -18,12 +19,12 @@ namespace Accounts.Ports.Handlers
         private readonly DbContextOptions<AccountContext> _options;
 
         /// <summary>
-        /// Constructs a delete account handler
+        /// A handler for deleting accounts
         /// </summary>
-        /// <param name="unitOfWork">The storage we intend to delete from</param>
+        /// <param name="options">The database to attach to</param>
         public DeleteExistingAccountCommandHandlerAsync(DbContextOptions<AccountContext> options)
         {
-            _options = options;
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
         
         /// <summary>

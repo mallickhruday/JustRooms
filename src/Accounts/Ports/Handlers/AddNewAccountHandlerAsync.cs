@@ -26,6 +26,7 @@ namespace Accounts.Ports.Handlers
         /// Construct an add new Account handler
         /// </summary>
         /// <param name="options">A unit of work, used to talk to the storage layer</param>
+        /// <param name="commandProcessor">A command processor to notify downstream consumers</param>
         public AddNewAccountHandlerAsync(DbContextOptions<AccountContext> options, IAmACommandProcessor commandProcessor)
         {
             _options = options;

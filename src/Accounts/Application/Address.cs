@@ -7,6 +7,9 @@ namespace Accounts.Application
     /// </summary>
     public class Address
     {
+        /// <summary>
+        /// Default constructor, used for serialization
+        /// </summary>
         public Address() {}
         
         /// <summary>
@@ -25,6 +28,9 @@ namespace Accounts.Application
             ZipCode = zipCode;
         }
         
+        /// <summary>
+        /// Identity of the record
+        /// </summary>
         public Guid AddressId { get; set; }
 
         /// <summary>

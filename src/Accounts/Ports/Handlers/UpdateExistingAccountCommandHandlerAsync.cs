@@ -25,7 +25,8 @@ namespace Accounts.Ports.Handlers
         /// <summary>
         /// Constructs a handler for updating guest accounts
         /// </summary>
-        /// <param name="options">The unit of work that lets us right to storage<</param>
+        /// <param name="options">The unit of work that lets us right to storage</param>
+        /// <param name="commandProcessor">A command processor to notify downstream systems</param>
         public UpdateExistingAccountCommandHandlerAsync(DbContextOptions<AccountContext> options, IAmACommandProcessor commandProcessor)
         {
             _options = options;

@@ -36,7 +36,6 @@ namespace Accounts.Ports.Repositories
         /// <summary>
         /// Save the account record
         /// </summary>
-        /// <param name="account">The account to save</param>
         /// <param name="ct">Token to allow cancelling the ongoing operation</param>
         Task UpdateAsync(CancellationToken ct = default(CancellationToken));
    }

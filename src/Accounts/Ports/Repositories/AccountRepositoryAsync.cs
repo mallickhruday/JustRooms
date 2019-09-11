@@ -104,9 +104,7 @@ namespace Accounts.Ports.Repositories
         /// <param name="account"></param>
         /// <param name="aggregateLock">A pessimistic lock, retrieved from a Lock call, that allows us to update this guest account</param>
         /// <param name="ct">A token for operation cancellation</param>
-        /// <param name="newAccountVersion">The new account version</param>
-        public async Task UpdateAsync(Account account, AggregateLock aggregateLock,
-            CancellationToken ct = default(CancellationToken))
+        public async Task UpdateAsync(Account account, AggregateLock aggregateLock, CancellationToken ct = default(CancellationToken))
         {
             if (aggregateLock != null)
             {

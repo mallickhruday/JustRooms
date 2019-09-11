@@ -12,10 +12,11 @@ namespace Accounts.Application
         /// Default constructor, mostly used for deserialization
         /// </summary>
         public Name(){}
-        
+
         /// <summary>
         /// The name of a guest
         /// </summary>
+        /// <param name="account">The account this name is for</param>
         /// <param name="firstName">The guest's first name</param>
         /// <param name="lastName">The guest's second name</param>
         public Name(Account account, string firstName, string lastName)
